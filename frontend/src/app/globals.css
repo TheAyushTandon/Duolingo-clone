@@ -1,0 +1,160 @@
+@import "tailwindcss";
+
+:root {
+  --font-nunito: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --duo-green: #58CC02;
+  --duo-green-dark: #46A302;
+  --duo-blue: #1CB0F6;
+  --duo-blue-dark: #1899D6;
+  --duo-gold: #FFC800;
+  --duo-gold-dark: #E5A400;
+  --duo-red: #FF4B4B;
+  --duo-red-dark: #EA2B2B;
+  --duo-purple: #CE82FF;
+  --duo-purple-dark: #A855F7;
+  --duo-gray: #E5E5E5;
+  --duo-gray-dark: #AFAFAF;
+  --duo-text: #4B4B4B;
+  --duo-subtext: #777777;
+}
+
+@font-face {
+  font-family: 'DuolingoFeather';
+  src: url('/fonts/DuolingoFeatherBold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DINNextRounded';
+  src: url('/fonts/DINNextRoundedLTProBold.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-din {
+  font-family: var(--font-din-next), 'DINNextRounded', sans-serif !important;
+  font-weight: 600;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.sknt2 {
+  color: #4B4B4B !important;
+  font-family: var(--font-feather), 'DuolingoFeather', var(--font-nunito), sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  -webkit-text-size-adjust: 100%;
+}
+
+.learn-anywhere-title {
+  color: #042C60 !important;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: var(--font-feather), 'DuolingoFeather', var(--font-nunito), sans-serif;
+  letter-spacing: -0.01em;
+}
+
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body {
+  font-family: var(--font-nunito);
+  color: var(--duo-text);
+  background-color: #FFFFFF;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 3D Tactile Button Utility Classes */
+.btn-duo-green {
+  background-color: #58CC02;
+  color: #FFFFFF;
+  border-bottom: 4px solid #46A302;
+  transition: all 0.08s ease-in-out;
+}
+.btn-duo-green:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+.btn-duo-green:active:not(:disabled) {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+.btn-duo-blue {
+  background-color: #1CB0F6;
+  color: #FFFFFF;
+  border-bottom: 4px solid #1899D6;
+  transition: all 0.08s ease-in-out;
+}
+.btn-duo-blue:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+.btn-duo-blue:active:not(:disabled) {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+.btn-duo-white {
+  background-color: #FFFFFF;
+  color: #4B4B4B;
+  border: 2px solid #E5E5E5;
+  border-bottom: 4px solid #E5E5E5;
+  transition: all 0.08s ease-in-out;
+}
+.btn-duo-white:hover:not(:disabled) {
+  background-color: #F7F7F7;
+}
+.btn-duo-white:active:not(:disabled) {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+.btn-duo-red {
+  background-color: #FF4B4B;
+  color: #FFFFFF;
+  border-bottom: 4px solid #EA2B2B;
+  transition: all 0.08s ease-in-out;
+}
+.btn-duo-red:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+.btn-duo-red:active:not(:disabled) {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+.btn-duo-disabled {
+  background-color: #E5E5E5;
+  color: #AFAFAF;
+  border-bottom: 4px solid #D4D4D4;
+  cursor: not-allowed;
+}
+
+/* Wiggle animation for incorrect answer */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* Pulse animation for active lesson */
+@keyframes gentle-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-gentle-bounce {
+  animation: gentle-bounce 1.8s ease-in-out infinite;
+}
