@@ -1,0 +1,64 @@
+﻿# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing & Coverage
+coverage/
+*.lcov
+
+# Next.js & Turbopack
+.next/
+out/
+build/
+dist/
+
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+ENV/
+*.egg-info/
+
+# Databases & local sqlite
+duolingo.db
+*.sqlite3
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE & Editor files
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+# Scratch scripts & temporary tests
+scratch_*.py
+scratch/
+test_*.py
+check_cdp.py
+element.jsx
+app.js
+*.webm
+*.ttf
+*.svg
+!frontend/public/**
+!frontend/src/**
