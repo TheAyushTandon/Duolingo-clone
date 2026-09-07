@@ -8,6 +8,7 @@ import { LanguageRibbon } from "@/components/landing/LanguageRibbon";
 import FeatureShowcase from "@/components/landing/FeatureShowcase";
 import LearnAnywhereSection from "@/components/landing/LearnAnywhereSection";
 import SuperDuolingoSection from "@/components/landing/SuperDuolingoSection";
+import DuolingoEnglishTestSection from "@/components/landing/DuolingoEnglishTestSection";
 import LandingFooter from "@/components/landing/LandingFooter";
 import CreatorBadge from "@/components/landing/CreatorBadge";
 import { useSound } from "@/hooks/useSound";
@@ -72,6 +73,9 @@ export default function LandingPage() {
 
       {/* Super Duolingo Promotion Section */}
       <SuperDuolingoSection />
+
+      {/* Duolingo English Test Section */}
+      <DuolingoEnglishTestSection />
 
       {/* Footer */}
       <LandingFooter />
