@@ -9,7 +9,7 @@ import {
   LogOut,
   Check,
   Lock,
-  Sparkles,
+  Footprints,
   GraduationCap,
 } from "lucide-react";
 
@@ -319,7 +319,7 @@ function renderAchievementBadge(name: string, isUnlocked: boolean) {
     case "First Steps":
       return (
         <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-b from-[#58CC02] to-[#46A302] border-2 border-[#58CC02] border-b-4 border-b-[#388502] flex items-center justify-center text-white shrink-0 shadow-md">
-          <Sparkles size={24} strokeWidth={2.5} className="drop-shadow-sm" />
+          <Footprints size={26} strokeWidth={2.2} className="drop-shadow-sm text-white" />
           <div className="absolute -bottom-1.5 px-1.5 py-0.2 rounded-full bg-[var(--bg-sidebar)] border border-emerald-500/40 shadow-xs flex items-center gap-0.5 text-emerald-500">
             <Check size={9} strokeWidth={3} />
             <span className="text-[8px] font-black uppercase tracking-wider">DONE</span>

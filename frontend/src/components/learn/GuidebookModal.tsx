@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { X, Volume2, BookOpen, Sparkles } from "lucide-react";
+import { X, Volume2, BookOpen } from "lucide-react";
 import { useSound } from "@/hooks/useSound";
 import { useTranslation } from "@/stores/useLanguageStore";
 import { useLearningPath } from "@/hooks/useUserData";
@@ -175,8 +175,7 @@ export function GuidebookModal({
         <div className="overflow-y-auto pr-1 space-y-5 flex-1">
           {/* Key Phrases Section */}
           <div>
-            <h4 className="font-black text-sm uppercase tracking-wider text-slate-700 mb-3 flex items-center gap-1.5">
-              <Sparkles size={16} className="text-[#ffc800]" />
+            <h4 className="font-black text-sm uppercase tracking-wider text-slate-700 mb-3">
               {t("Essential Key Phrases")}
             </h4>
             <div className="grid gap-2.5">
