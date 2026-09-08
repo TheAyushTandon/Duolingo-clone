@@ -1,8 +1,10 @@
-import sys
 import os
+import sys
+
 sys.path.insert(0, os.path.abspath("."))
 
 from sqlalchemy import delete, select
+
 from app.core.database import SessionLocal
 from app.models import (
     ExerciseAttempt,
@@ -32,9 +34,7 @@ TARGET_USERNAMES = [
 
 def clean_users():
     with SessionLocal() as db:
-        users_to_delete = db.scalars(
-            select(User).where(User.username.in_(TARGET_USERNAMES))
-        ).all()
+        users_to_delete = db.scalars(select(User).where(User.username.in_(TARGET_USERNAMES))).all()
 
         if not users_to_delete:
             print("No matching users found to delete.")
@@ -56,29 +56,19 @@ def clean_users():
             )
             print(f"Deleted {res.rowcount} exercise attempts.")
 
-            res = db.execute(
-                delete(LessonAttempt).where(LessonAttempt.id.in_(lesson_attempt_ids))
-            )
+            res = db.execute(delete(LessonAttempt).where(LessonAttempt.id.in_(lesson_attempt_ids)))
             print(f"Deleted {res.rowcount} lesson attempts.")
 
-        res = db.execute(
-            delete(XPTransaction).where(XPTransaction.user_id.in_(user_ids))
-        )
+        res = db.execute(delete(XPTransaction).where(XPTransaction.user_id.in_(user_ids)))
         print(f"Deleted {res.rowcount} XP transactions.")
 
-        res = db.execute(
-            delete(UserActivity).where(UserActivity.user_id.in_(user_ids))
-        )
+        res = db.execute(delete(UserActivity).where(UserActivity.user_id.in_(user_ids)))
         print(f"Deleted {res.rowcount} user activities.")
 
-        res = db.execute(
-            delete(UserSkillProgress).where(UserSkillProgress.user_id.in_(user_ids))
-        )
+        res = db.execute(delete(UserSkillProgress).where(UserSkillProgress.user_id.in_(user_ids)))
         print(f"Deleted {res.rowcount} user skill progress entries.")
 
-        res = db.execute(
-            delete(UserAchievement).where(UserAchievement.user_id.in_(user_ids))
-        )
+        res = db.execute(delete(UserAchievement).where(UserAchievement.user_id.in_(user_ids)))
         print(f"Deleted {res.rowcount} user achievements.")
 
         res = db.execute(delete(User).where(User.id.in_(user_ids)))
