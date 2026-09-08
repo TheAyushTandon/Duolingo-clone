@@ -104,7 +104,7 @@ export function LandingHeader({ onOpenAuth }: LandingHeaderProps = {}) {
         }`}
       >
       <div
-        className={`w-full max-w-[750px] mx-auto px-4 sm:px-6 lg:px-12 h-18 flex items-center transition-all duration-300 ease-in-out select-none relative ${
+        className={`w-full max-w-5xl xl:max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 h-18 flex items-center transition-all duration-300 ease-in-out select-none relative ${
           isScrolled ? "justify-between" : "justify-center md:justify-between"
         }`}
       >
