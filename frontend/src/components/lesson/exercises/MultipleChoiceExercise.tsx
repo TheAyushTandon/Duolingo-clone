@@ -5,6 +5,7 @@ import { Volume2, User, Smile } from "lucide-react";
 import { SelectOption } from "@/types";
 import { useSound } from "@/hooks/useSound";
 import { matchOptionSvg } from "@/lib/question-assets";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 interface MultipleChoiceExerciseProps {
   prompt: string;
@@ -24,6 +25,7 @@ export function MultipleChoiceExercise({
   locale = "es-ES",
 }: MultipleChoiceExerciseProps) {
   const { playClick, speak } = useSound();
+  const { tp } = useTranslation();
 
   // Keyboard hotkeys: '1', '2', '3'
   useEffect(() => {
@@ -47,7 +49,7 @@ export function MultipleChoiceExercise({
       {/* Prompt Header */}
       <div className="flex items-center gap-3">
         <h2 className="text-2xl sm:text-3xl font-black text-[var(--text-main)] tracking-tight">
-          {prompt}
+          {tp(prompt)}
         </h2>
       </div>
 

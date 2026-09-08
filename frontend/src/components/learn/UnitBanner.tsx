@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { BookOpen, Trophy } from "lucide-react";
 import { useSound } from "@/hooks/useSound";
 import { GuidebookModal } from "./GuidebookModal";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 interface UnitBannerProps {
   unitIndex: number;
@@ -19,6 +20,7 @@ export function UnitBanner({
   bannerColor = "bg-[#58cc02]",
 }: UnitBannerProps) {
   const { playClick } = useSound();
+  const { t } = useTranslation();
   const [showGuidebook, setShowGuidebook] = useState(false);
 
   return (
@@ -32,7 +34,7 @@ export function UnitBanner({
         <div className="relative z-10 flex items-start justify-between">
           <div className="space-y-1 max-w-[70%]">
             <span className="font-black text-xs uppercase tracking-widest text-white/85 block">
-              SECTION 1, UNIT {unitIndex + 1}
+              {t("SECTION")} 1, {t("UNIT")} {unitIndex + 1}
             </span>
             <h2 className="text-2xl sm:text-3xl font-black leading-tight tracking-tight !text-white font-din drop-shadow-sm">
               {title}
@@ -51,7 +53,7 @@ export function UnitBanner({
             className="flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/40 font-black text-xs uppercase tracking-wider transition-colors shrink-0"
           >
             <BookOpen size={16} />
-            <span className="hidden sm:inline">GUIDEBOOK</span>
+            <span className="hidden sm:inline">{t("GUIDEBOOK")}</span>
           </button>
         </div>
       </div>

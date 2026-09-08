@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useSound } from "@/hooks/useSound";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 interface MatchPairsExerciseProps {
   prompt: string;
@@ -25,6 +26,7 @@ export function MatchPairsExercise({
   pairsMap,
 }: MatchPairsExerciseProps) {
   const { playClick, playCorrect, playIncorrect, speak } = useSound();
+  const { tp } = useTranslation();
 
   const [selectedLeft, setSelectedLeft] = useState<string | null>(null);
   const [selectedRight, setSelectedRight] = useState<string | null>(null);
@@ -103,7 +105,7 @@ export function MatchPairsExercise({
   return (
     <div className="w-full max-w-xl mx-auto space-y-6 select-none">
       <h2 className="text-2xl sm:text-3xl font-black text-[var(--text-main)] tracking-tight">
-        {prompt}
+        {tp(prompt)}
       </h2>
 
       <div className="grid grid-cols-2 gap-4">

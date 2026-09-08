@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Check, Crown, Play, X } from "lucide-react";
 import { useSound } from "@/hooks/useSound";
 import { RoadmapChest } from "./RoadmapChest";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 export type RoadmapNodeType = "star" | "chest" | "headphones" | "trophy";
 export type RoadmapNodeState = "AVAILABLE" | "IN_PROGRESS" | "COMPLETED" | "LOCKED";
@@ -41,6 +42,7 @@ export function SkillNode({
   onClose,
 }: SkillNodeProps) {
   const { playClick } = useSound();
+  const { t } = useTranslation();
 
   const isCompleted = node.state === "COMPLETED";
   const isLocked = node.state === "LOCKED";
@@ -223,10 +225,10 @@ export function SkillNode({
               <div>
                 <span className="font-din font-black text-[11px] uppercase tracking-wider text-[var(--text-sub)] block">
                   {isCompleted
-                    ? "Completed"
+                    ? t("Completed")
                     : isLocked
-                    ? "Locked"
-                    : `Level ${node.level || 1} of ${node.total_levels || 1}`}
+                    ? t("Locked")
+                    : `${t("Level")} ${node.level || 1} ${t("of")} ${node.total_levels || 1}`}
                 </span>
                 <h4 className="font-din font-black text-base text-[var(--text-main)] leading-tight">
                   {node.title}
@@ -250,15 +252,15 @@ export function SkillNode({
 
             {isLocked ? (
               <div className="w-full py-3 rounded-2xl bg-[#2E383F] text-[var(--text-sub)] font-din font-black text-xs uppercase tracking-wider text-center border-2 border-[#1D252A]">
-                Complete previous lessons to unlock
+                {t("Complete previous lessons to unlock")}
               </div>
             ) : node.type === "chest" ? (
               <div className="w-full py-3 rounded-2xl bg-[#FFC800] text-white font-din font-black text-xs uppercase tracking-wider text-center shadow-[0_4px_0_#D19500]">
-                Checkpoint Reached! (+20 Gems)
+                {t("Checkpoint Reached! (+20 Gems)")}
               </div>
             ) : node.type === "trophy" ? (
               <div className="w-full py-3 rounded-2xl bg-[#FFC800] text-white font-din font-black text-xs uppercase tracking-wider text-center shadow-[0_4px_0_#D19500]">
-                Unit Mastered! 🏆
+                {t("Unit Mastered! 🏆")}
               </div>
             ) : (
               <Link
@@ -274,7 +276,11 @@ export function SkillNode({
                 }`}
               >
                 <Play size={16} className="fill-current" />
-                <span>{isCompleted ? "PRACTICE +10 XP" : `START +${activeLesson.xp_reward || 10} XP`}</span>
+                <span>
+                  {isCompleted
+                    ? `${t("PRACTICE")} +10 XP`
+                    : `${t("START")} +${activeLesson.xp_reward || 10} XP`}
+                </span>
               </Link>
             )}
           </div>

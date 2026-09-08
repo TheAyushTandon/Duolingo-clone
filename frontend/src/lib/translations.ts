@@ -159,6 +159,68 @@ export const HINDI_TRANSLATIONS: Record<string, string> = {
   "TOTAL XP": "कुल XP",
   "STREAK": "लगातार दिन",
 
+  // Settings Page
+  "Site Language": "साइट भाषा",
+  "Choose your preferred language for the Duolingo interface and lesson questions.":
+    "डुओलिंगो इंटरफ़ेस और अभ्यास प्रश्नों के लिए अपनी पसंदीदा भाषा चुनें।",
+  "Language updated to English!": "Language updated to English!",
+  "Daily goal": "दैनिक लक्ष्य",
+  "Daily goal saved!": "दैनिक लक्ष्य सहेजा गया!",
+  "Daily goal complete!": "दैनिक लक्ष्य पूरा हुआ!",
+  "Set a daily XP goal to stay motivated and keep your streak going.":
+    "प्रेरित रहने और अपनी लकीर जारी रखने के लिए दैनिक XP लक्ष्य निर्धारित करें।",
+  "Experience": "अनुभव",
+  "Sound effects": "ध्वनि प्रभाव",
+  "Feedback sounds and narration": "प्रतिक्रिया ध्वनियाँ और उच्चारण",
+  "Dark mode": "डार्क मोड",
+  "Toggle light/dark appearance": "हल्का/गहरा रूप बदलें",
+  "Coming soon": "जल्द आ रहा है",
+  "Speech recognition": "भाषण पहचान",
+  "Pronunciation exercises with real voice scoring": "वास्तविक आवाज़ स्कोरिंग के साथ उच्चारण अभ्यास",
+  "Unlimited hearts, no ads, and legendary lessons": "असीमित दिल, बिना विज्ञापन और लेजेंडरी पाठ",
+  "Friends & social": "मित्र और सामाजिक",
+  "Follow friends and share leaderboards": "दोस्तों को फ़ॉलो करें और लीडरबोर्ड साझा करें",
+  "Sign out": "साइन आउट करें",
+  "5 min / day": "5 मिनट / दिन",
+  "10 min / day": "10 मिनट / दिन",
+  "15 min / day": "15 मिनट / दिन",
+  "20 min / day": "20 मिनट / दिन",
+
+  // Roadmap & Dashboard Widgets
+  "SECTION": "अनुभाग",
+  "UNIT": "इकाई",
+  "Unit": "इकाई",
+  "GUIDEBOOK": "मार्गदर्शिका",
+  "Guidebook": "मार्गदर्शिका",
+  "START": "शुरू करें",
+  "PRACTICE": "अभ्यास करें",
+  "Practice": "अभ्यास करें",
+  "Level": "स्तर",
+  "of": "का",
+  "Locked": "बंद",
+  "Completed": "पूर्ण",
+  "Complete previous lessons to unlock": "अनलॉक करने के लिए पिछले पाठ पूरे करें",
+  "Checkpoint Reached! (+20 Gems)": "चेकपॉइंट पहुंचा! (+20 रत्न)",
+  "Unit Mastered! 🏆": "इकाई पूरी की! 🏆",
+  "XP today": "XP आज",
+  "Keep going to earn more!": "और अधिक कमाने के लिए सीखते रहें!",
+  "XP to go — keep your streak alive!": "XP शेष — अपनी लकीर बनाए रखें!",
+  "View all": "सभी देखें",
+  "Earn": "कमाएं",
+  "Complete": "पूरा करें",
+  "lessons": "पाठ",
+  "Completed!": "पूर्ण हुआ!",
+  "Upgrade to Pro": "प्रो में अपग्रेड करें",
+  "Get unlimited hearts and more!": "असीमित दिल और बहुत कुछ पाएं!",
+  "Upgrade today": "आज ही अपग्रेड करें",
+  "Essential Key Phrases": "आवश्यक मुख्य वाक्यांश",
+  "Match the greetings": "अभिवादन का मिलान करें",
+  "Match the pairs": "जोड़ों का मिलान करें",
+  "Match the words": "शब्दों का मिलान करें",
+  "Match the foods": "खाद्य पदार्थों का मिलान करें",
+  "Match the animals": "जानवरों का मिलान करें",
+  "Complete the phrase": "वाक्यांश पूरा करें",
+
   // Notices
   "Only English and Hindi are available in this section.": "इस अनुभाग में केवल अंग्रेज़ी और हिंदी उपलब्ध हैं।",
   "Only languages are supported as of this version of Duolingo.": "डुओलिंगो के इस संस्करण में केवल भाषाएं समर्थित हैं।",
@@ -185,12 +247,50 @@ export function translatePrompt(prompt: string, lang: LanguageCode = "en"): stri
     if (k.toLowerCase() === lower) return v;
   }
 
-  // Common pattern matches
+  // Dynamic Regex and Pattern matching for question prompts
+  const whatDoesMatch = trimmed.match(/^what does ['"]?([^'"]+)['"]? mean\??$/i);
+  if (whatDoesMatch) {
+    return `'${whatDoesMatch[1]}' का क्या अर्थ है?`;
+  }
+
+  const translateIntoFrenchMatch = trimmed.match(/^translate into french:\s*(.+)$/i);
+  if (translateIntoFrenchMatch) {
+    return `फ़्रेंच में अनुवाद करें: ${translateIntoFrenchMatch[1]}`;
+  }
+
+  const translateIntoEnglishMatch = trimmed.match(/^translate into english:\s*(.+)$/i);
+  if (translateIntoEnglishMatch) {
+    return `अंग्रेज़ी में अनुवाद करें: ${translateIntoEnglishMatch[1]}`;
+  }
+
+  const translateIntoSpanishMatch = trimmed.match(/^translate into spanish:\s*(.+)$/i);
+  if (translateIntoSpanishMatch) {
+    return `स्पैनिश में अनुवाद करें: ${translateIntoSpanishMatch[1]}`;
+  }
+
+  const completeMatch = trimmed.match(/^complete:\s*(.+)$/i);
+  if (completeMatch) {
+    return `पूरा करें: ${completeMatch[1]}`;
+  }
+
+  const matchCustom = trimmed.match(/^match the (.+)$/i);
+  if (matchCustom) {
+    const item = matchCustom[1].toLowerCase();
+    if (item === "greetings") return "अभिवादन का मिलान करें";
+    if (item === "pairs") return "जोड़ों का मिलान करें";
+    if (item === "words") return "शब्दों का मिलान करें";
+    if (item === "foods") return "खाद्य पदार्थों का मिलान करें";
+    if (item === "animals") return "जानवरों का मिलान करें";
+    return `${matchCustom[1]} का मिलान करें`;
+  }
+
   if (/^tap the matching pairs/i.test(trimmed)) return "मिलान वाले जोड़ों पर टैप करें";
-  if (/^select the correct meaning/i.test(trimmed)) return "सही अर्थ चुनें";
+  if (/^select the correct (meaning|answer)/i.test(trimmed)) return "सही अर्थ चुनें";
+  if (/^choose the correct (meaning|answer)/i.test(trimmed)) return "सही विकल्प चुनें";
   if (/^tap what you hear/i.test(trimmed)) return "जो आप सुनते हैं उस पर टैप करें";
   if (/^type what you hear/i.test(trimmed)) return "जो आप सुनते हैं उसे टाइप करें";
   if (/^fill in the blank/i.test(trimmed)) return "खाली स्थान भरें";
+  if (/^complete the phrase/i.test(trimmed)) return "वाक्यांश पूरा करें";
   if (/^write this in english/i.test(trimmed)) return "इसे अंग्रेज़ी में लिखें";
   if (/^write this in french/i.test(trimmed)) return "इसे फ़्रेंच में लिखें";
   if (/^write this in spanish/i.test(trimmed)) return "इसे स्पैनिश में लिखें";

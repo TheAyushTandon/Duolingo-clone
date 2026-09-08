@@ -3,6 +3,7 @@
 import React from "react";
 import { Volume2 } from "lucide-react";
 import { useSound } from "@/hooks/useSound";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 interface FillBlankExerciseProps {
   prompt: string;
@@ -24,6 +25,7 @@ export function FillBlankExercise({
   locale = "es-ES",
 }: FillBlankExerciseProps) {
   const { playClick, speak } = useSound();
+  const { tp } = useTranslation();
 
   const part1 = sentenceParts[0] || "";
   const part2 = sentenceParts[1] || "";
@@ -31,7 +33,7 @@ export function FillBlankExercise({
   return (
     <div className="w-full max-w-xl mx-auto space-y-8 select-none">
       <h2 className="text-2xl sm:text-3xl font-black text-[var(--text-main)] tracking-tight">
-        {prompt}
+        {tp(prompt)}
       </h2>
 
       {/* Sentence with Blank Slot */}

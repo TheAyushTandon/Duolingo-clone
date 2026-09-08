@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -13,6 +14,7 @@ import {
   Users,
   LogOut,
   Check,
+  Globe,
 } from "lucide-react";
 
 import { updateSettings } from "@/lib/api";
@@ -20,6 +22,7 @@ import { useProfile } from "@/hooks/useUserData";
 import { usePreferencesStore } from "@/stores/usePreferencesStore";
 import { useSound } from "@/hooks/useSound";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 const GOAL_OPTIONS = [
   { xp: 20, label: "Casual", hint: "5 min / day" },
@@ -34,13 +37,14 @@ export default function SettingsPage() {
   const { data: profile } = useProfile();
   const { playClick, playCorrect } = useSound();
   const { soundEnabled, toggleSound } = usePreferencesStore();
+  const { language, setLanguage, t } = useTranslation();
   const [feedback, setFeedback] = useState<string | null>(null);
 
   const goalMutation = useMutation({
     mutationFn: (dailyGoalXp: number) => updateSettings({ daily_goal_xp: dailyGoalXp }),
     onSuccess: () => {
       playCorrect();
-      setFeedback("Daily goal saved!");
+      setFeedback(t("Daily goal saved!"));
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       queryClient.invalidateQueries({ queryKey: ["learningPath"] });
     },
@@ -63,7 +67,7 @@ export default function SettingsPage() {
             <ArrowLeft size={22} strokeWidth={2.5} />
           </Link>
           <h1 className="text-lg font-black uppercase tracking-wider text-[var(--text-main)]">
-            Settings
+            {t("Settings")}
           </h1>
         </div>
       </header>
@@ -75,13 +79,94 @@ export default function SettingsPage() {
           </div>
         )}
 
+        {/* Site Language Switcher */}
+        <section className="rounded-3xl border-2 border-[var(--border-color)] bg-[var(--bg-sidebar)] p-6 space-y-4 shadow-sm">
+          <div className="flex items-center gap-2.5">
+            <Globe size={22} className="text-[#1CB0F6]" />
+            <h2 className="text-lg font-black text-[var(--text-main)]">
+              {t("Site Language")}
+            </h2>
+          </div>
+          <p className="text-xs font-semibold text-[var(--text-sub)]">
+            {t("Choose your preferred language for the Duolingo interface and lesson questions.")}
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            {/* English Card */}
+            <button
+              onClick={() => {
+                playClick();
+                setLanguage("en");
+                setFeedback("Language updated to English!");
+              }}
+              className={`relative flex items-center justify-between p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                language === "en"
+                  ? "border-[#1CB0F6] bg-[#1CB0F6]/10 shadow-[0_3px_0_#1899D6]"
+                  : "border-[var(--border-color)] hover:border-[#1CB0F6]/40 bg-[var(--bg-main)]"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Image
+                  src="/assets/flags/english.svg"
+                  alt="English"
+                  width={36}
+                  height={26}
+                  className="rounded-md border border-black/10 object-cover shadow-sm"
+                />
+                <div className="text-left">
+                  <div className="font-black text-sm text-[var(--text-main)]">English</div>
+                  <div className="text-xs font-semibold text-[var(--text-sub)]">English (US)</div>
+                </div>
+              </div>
+              {language === "en" && (
+                <div className="w-6 h-6 rounded-full bg-[#1CB0F6] flex items-center justify-center text-white shadow-sm">
+                  <Check size={16} strokeWidth={3.5} />
+                </div>
+              )}
+            </button>
+
+            {/* Hindi Card */}
+            <button
+              onClick={() => {
+                playClick();
+                setLanguage("hi");
+                setFeedback("भाषा बदलकर हिंदी कर दी गई!");
+              }}
+              className={`relative flex items-center justify-between p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                language === "hi"
+                  ? "border-[#1CB0F6] bg-[#1CB0F6]/10 shadow-[0_3px_0_#1899D6]"
+                  : "border-[var(--border-color)] hover:border-[#1CB0F6]/40 bg-[var(--bg-main)]"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Image
+                  src="/assets/flags/73837fa39dbf1bcc4c95a17a58ed0ffb.svg"
+                  alt="Hindi"
+                  width={36}
+                  height={26}
+                  className="rounded-md border border-black/10 object-cover shadow-sm"
+                />
+                <div className="text-left">
+                  <div className="font-black text-sm text-[var(--text-main)]">हिंदी</div>
+                  <div className="text-xs font-semibold text-[var(--text-sub)]">Hindi</div>
+                </div>
+              </div>
+              {language === "hi" && (
+                <div className="w-6 h-6 rounded-full bg-[#1CB0F6] flex items-center justify-center text-white shadow-sm">
+                  <Check size={16} strokeWidth={3.5} />
+                </div>
+              )}
+            </button>
+          </div>
+        </section>
+
         {/* Daily goal */}
         <section className="rounded-3xl border-2 border-[var(--border-color)] bg-[var(--bg-sidebar)] p-6 space-y-4">
           <h2 className="text-lg font-black text-[var(--text-main)] flex items-center gap-2">
-            🎯 Daily goal
+            🎯 {t("Daily goal")}
           </h2>
           <p className="text-xs font-semibold text-[var(--text-sub)]">
-            Set a daily XP goal to stay motivated and keep your streak going.
+            {t("Set a daily XP goal to stay motivated and keep your streak going.")}
           </p>
           <div className="grid grid-cols-2 gap-3">
             {GOAL_OPTIONS.map((option) => {
@@ -104,14 +189,14 @@ export default function SettingsPage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-black text-sm text-[var(--text-main)]">
-                      {option.label}
+                      {t(option.label)}
                     </span>
                     {isSelected && (
                       <Check size={16} strokeWidth={3.5} className="text-[#FF9600]" />
                     )}
                   </div>
                   <span className="text-xs font-semibold text-[var(--text-sub)]">
-                    {option.xp} XP · {option.hint}
+                    {option.xp} XP · {t(option.hint)}
                   </span>
                 </button>
               );
@@ -122,7 +207,7 @@ export default function SettingsPage() {
         {/* Sound & appearance */}
         <section className="rounded-3xl border-2 border-[var(--border-color)] bg-[var(--bg-sidebar)] p-6 space-y-4">
           <h2 className="text-lg font-black text-[var(--text-main)]">
-            Experience
+            {t("Experience")}
           </h2>
 
           <div className="flex items-center justify-between">
@@ -133,10 +218,10 @@ export default function SettingsPage() {
               />
               <div>
                 <div className="font-black text-sm text-[var(--text-main)]">
-                  Sound effects
+                  {t("Sound effects")}
                 </div>
                 <div className="text-xs font-semibold text-[var(--text-sub)]">
-                  Feedback sounds and narration
+                  {t("Feedback sounds and narration")}
                 </div>
               </div>
             </div>
@@ -167,10 +252,10 @@ export default function SettingsPage() {
               <span className="text-xl">🌙</span>
               <div>
                 <div className="font-black text-sm text-[var(--text-main)]">
-                  Dark mode
+                  {t("Dark mode")}
                 </div>
                 <div className="text-xs font-semibold text-[var(--text-sub)]">
-                  Toggle light/dark appearance
+                  {t("Toggle light/dark appearance")}
                 </div>
               </div>
             </div>
@@ -181,23 +266,23 @@ export default function SettingsPage() {
         {/* Coming soon placeholders */}
         <section className="rounded-3xl border-2 border-dashed border-[var(--border-color)] bg-[var(--bg-sidebar)]/50 p-6 space-y-5">
           <h2 className="text-lg font-black text-[var(--text-sub)] uppercase tracking-wider text-xs">
-            Coming soon
+            {t("Coming soon")}
           </h2>
 
           <PlaceholderRow
             icon={<Mic size={20} />}
-            title="Speech recognition"
-            hint="Pronunciation exercises with real voice scoring"
+            title={t("Speech recognition")}
+            hint={t("Pronunciation exercises with real voice scoring")}
           />
           <PlaceholderRow
             icon={<Sparkles size={20} />}
-            title="Super Duolingo"
-            hint="Unlimited hearts, no ads, and legendary lessons"
+            title={t("Super Duolingo")}
+            hint={t("Unlimited hearts, no ads, and legendary lessons")}
           />
           <PlaceholderRow
             icon={<Users size={20} />}
-            title="Friends & social"
-            hint="Follow friends and share leaderboards"
+            title={t("Friends & social")}
+            hint={t("Follow friends and share leaderboards")}
           />
         </section>
 
@@ -209,7 +294,7 @@ export default function SettingsPage() {
           className="w-full rounded-2xl border-2 border-[var(--border-color)] bg-[var(--bg-sidebar)] py-3.5 font-black text-sm uppercase tracking-wider text-rose-500 transition-colors hover:border-rose-300 hover:bg-rose-500/5 flex items-center justify-center gap-2"
         >
           <LogOut size={18} />
-          Sign out
+          {t("Sign out")}
         </button>
       </main>
     </div>

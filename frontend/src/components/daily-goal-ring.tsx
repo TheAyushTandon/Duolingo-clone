@@ -3,6 +3,7 @@
 import { Flame, Check } from "lucide-react";
 
 import { useProfile, useTodayActivity } from "@/hooks/useUserData";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 /**
  * Daily XP goal ring — the Duolingo-style circular indicator shown above
@@ -12,6 +13,7 @@ import { useProfile, useTodayActivity } from "@/hooks/useUserData";
 export function DailyGoalRing() {
   const { data: profile } = useProfile();
   const { data: today } = useTodayActivity();
+  const { t } = useTranslation();
 
   const goal = profile?.daily_goal_xp ?? 50;
   const earned = today?.xp ?? 0;
@@ -62,18 +64,18 @@ export function DailyGoalRing() {
 
       <div className="min-w-0">
         <h3 className="font-black text-sm text-[var(--text-main)] uppercase tracking-wide">
-          {complete ? "Daily goal complete!" : "Daily goal"}
+          {complete ? t("Daily goal complete!") : t("Daily goal")}
         </h3>
         <p className="text-xs font-bold text-[var(--text-sub)] mt-0.5">
-          {Math.min(earned, goal)} / {goal} XP today
+          {Math.min(earned, goal)} / {goal} {t("XP today")}
         </p>
         {complete ? (
           <p className="text-[11px] font-black uppercase tracking-wider text-[#FFC800] mt-0.5">
-            Keep going to earn more!
+            {t("Keep going to earn more!")}
           </p>
         ) : (
           <p className="text-[11px] font-semibold text-[var(--text-sub)] mt-0.5">
-            {Math.max(goal - earned, 0)} XP to go — keep your streak alive!
+            {Math.max(goal - earned, 0)} {t("XP to go — keep your streak alive!")}
           </p>
         )}
       </div>

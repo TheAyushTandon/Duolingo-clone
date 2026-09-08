@@ -3,6 +3,7 @@
 import React from "react";
 import { X, Volume2, BookOpen, Sparkles } from "lucide-react";
 import { useSound } from "@/hooks/useSound";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 interface GuidebookModalProps {
   unitIndex: number;
@@ -21,6 +22,7 @@ const PHRASES = [
 
 export function GuidebookModal({ unitIndex, unitTitle, onClose }: GuidebookModalProps) {
   const { playClick, speak } = useSound();
+  const { t } = useTranslation();
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 select-none">
@@ -31,7 +33,7 @@ export function GuidebookModal({ unitIndex, unitTitle, onClose }: GuidebookModal
             <BookOpen size={24} />
             <div>
               <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 block">
-                Unit {unitIndex} Guidebook
+                {t("Unit")} {unitIndex} {t("Guidebook")}
               </span>
               <h3 className="font-black text-lg text-slate-800 leading-none">
                 {unitTitle}
@@ -55,7 +57,7 @@ export function GuidebookModal({ unitIndex, unitTitle, onClose }: GuidebookModal
           <div>
             <h4 className="font-black text-sm uppercase tracking-wider text-slate-700 mb-3 flex items-center gap-1.5">
               <Sparkles size={16} className="text-[#ffc800]" />
-              Essential Key Phrases
+              {t("Essential Key Phrases")}
             </h4>
             <div className="grid gap-2.5">
               {PHRASES.map((item, idx) => (
@@ -103,7 +105,7 @@ export function GuidebookModal({ unitIndex, unitTitle, onClose }: GuidebookModal
             }}
             className="w-full py-3 rounded-2xl bg-[#58cc02] text-white font-black text-sm uppercase tracking-wider hover:bg-[#46a302] shadow-[0_4px_0_#46a302] active:translate-y-1 active:shadow-none transition-all"
           >
-            GOT IT
+            {t("GOT IT")}
           </button>
         </div>
       </div>
