@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Wrench, LogOut } from "lucide-react";
+import { Wrench, LogOut, Settings } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -41,6 +41,11 @@ export const Sidebar = ({ className }: SidebarProps) => {
         <SidebarItem label="Quests" href="/quests" iconSrc="/quests.svg" />
         <SidebarItem label="Shop" href="/shop" iconSrc="/shop.svg" />
         <SidebarItem label="Profile" href="/profile" iconSrc="/profile.svg" />
+        <SidebarItem
+          label="Settings"
+          href="/settings"
+          icon={<Settings size={26} className="text-[var(--text-sub)]" />}
+        />
       </div>
 
       <div className="p-4 flex items-center justify-center gap-2">

@@ -52,3 +52,6 @@ class User(BaseModel):
     )
     streak: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     last_active_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+
+    # Daily XP goal (Duolingo-style: 50 XP / "Casual" default).
+    daily_goal_xp: Mapped[int] = mapped_column(Integer, default=50, nullable=False)

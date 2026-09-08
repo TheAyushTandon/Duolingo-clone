@@ -15,7 +15,13 @@ from app.models.user import User
 from app.repositories.content_repository import ContentRepository
 from app.repositories.progress_repository import ProgressRepository
 from app.schemas.achievement import AchievementOut
-from app.schemas.user import ActivityEntry, ActivityPage, UserProfile, UserStats
+from app.schemas.user import (
+    ActivityEntry,
+    ActivityPage,
+    UpdateSettingsRequest,
+    UserProfile,
+    UserStats,
+)
 from app.utils.dates import is_same_day, today_utc
 from app.utils.pagination import clamp_limit, decode_cursor, next_cursor_for
 
@@ -60,6 +66,7 @@ def build_user_profile(db: Session, user: User) -> UserProfile:
         streak=user.streak,
         streak_active_today=user.last_active_date is not None
         and is_same_day(user.last_active_date, today_utc()),
+        daily_goal_xp=user.daily_goal_xp,
         achievements=_achievements_for(db, user),
         created_at=user.created_at,
     )
@@ -90,6 +97,23 @@ def get_stats(
         skills_completed=repo.count_completed_skills(db, user.id),
         achievements_count=repo.count_unlocked_achievements(db, user.id),
     )
+
+
+@router.patch(
+    "/settings",
+    response_model=UserProfile,
+    summary="Update user settings (daily goal)",
+)
+def update_settings(
+    payload: UpdateSettingsRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> UserProfile:
+    """Partial settings update. Currently supported: ``daily_goal_xp``."""
+    if payload.daily_goal_xp is not None:
+        user.daily_goal_xp = payload.daily_goal_xp
+    db.commit()
+    return build_user_profile(db, user)
 
 
 @router.post(

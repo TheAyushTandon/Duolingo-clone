@@ -5,6 +5,7 @@ import { StickyWrapper } from "@/components/sticky-wrapper";
 import { LiveUserProgress } from "@/components/live-user-progress";
 import { LearningPath } from "@/components/learn/LearningPath";
 import { LiveQuests } from "@/components/live-quests";
+import { DailyGoalRing } from "@/components/daily-goal-ring";
 import { Promo } from "@/components/promo";
 
 import { useLearningPath } from "@/hooks/useUserData";
@@ -46,6 +47,7 @@ const LearnPage = () => {
       </StickyWrapper>
       <FeedWrapper>
         <Header title={data.course.title} />
+        <DailyGoalRing />
         <LearningPath units={data.units} />
       </FeedWrapper>
     </div>

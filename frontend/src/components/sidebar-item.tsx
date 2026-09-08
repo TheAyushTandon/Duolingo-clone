@@ -8,11 +8,12 @@ import { Button } from "@/components/ui/button";
 
 type SidebarItemProps = {
   label: string;
-  iconSrc: string;
+  iconSrc?: string;
+  icon?: React.ReactNode;
   href: string;
 };
 
-export const SidebarItem = ({ label, iconSrc, href }: SidebarItemProps) => {
+export const SidebarItem = ({ label, iconSrc, icon, href }: SidebarItemProps) => {
   const pathname = usePathname();
   const isActive = pathname === href;
 
@@ -23,13 +24,17 @@ export const SidebarItem = ({ label, iconSrc, href }: SidebarItemProps) => {
       asChild
     >
       <Link href={href} prefetch>
-        <Image
-          src={iconSrc}
-          alt={label}
-          className="mr-5"
-          height={32}
-          width={32}
-        />
+        {iconSrc ? (
+          <Image
+            src={iconSrc}
+            alt={label}
+            className="mr-5"
+            height={32}
+            width={32}
+          />
+        ) : (
+          <span className="mr-5 flex h-8 w-8 items-center justify-center">{icon}</span>
+        )}
         {label}
       </Link>
     </Button>

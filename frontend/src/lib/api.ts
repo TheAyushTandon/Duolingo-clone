@@ -218,6 +218,17 @@ export async function fetchProfile(): Promise<UserProfileResponse> {
   return handleResponse<UserProfileResponse>(res);
 }
 
+export async function updateSettings(
+  settings: { daily_goal_xp?: number }
+): Promise<UserProfileResponse> {
+  const res = await fetch(`${API_BASE_URL}/profile/settings`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+    body: JSON.stringify(settings),
+  });
+  return handleResponse<UserProfileResponse>(res);
+}
+
 export async function fetchProfileStats(): Promise<UserStatsResponse> {
   const res = await fetch(`${API_BASE_URL}/profile/stats`, {
     cache: "no-store",

@@ -20,8 +20,17 @@ class UserProfile(BaseModel):
     max_hearts: int
     streak: int
     streak_active_today: bool
+    daily_goal_xp: int = 50
     achievements: list[AchievementOut] = Field(default_factory=list)
     created_at: dt.datetime
+
+
+class UpdateSettingsRequest(BaseModel):
+    """PATCH /profile/settings — partial updates, all optional."""
+
+    daily_goal_xp: int | None = Field(
+        default=None, ge=10, le=200, description="Daily XP goal (10-200)."
+    )
 
 
 class HeartStatus(BaseModel):

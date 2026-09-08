@@ -182,6 +182,7 @@ export interface UserProfileResponse {
   max_hearts: number;
   streak: number;
   streak_active_today: boolean;
+  daily_goal_xp: number;
   achievements: AchievementOut[];
 }
 

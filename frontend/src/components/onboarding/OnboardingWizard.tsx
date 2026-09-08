@@ -12,7 +12,7 @@ import StepDailyGoal from "./StepDailyGoal";
 import StepPlacement from "./StepPlacement";
 import StepConfirmation from "./StepConfirmation";
 import PlacementTest from "./PlacementTest";
-import { setActiveCourse } from "@/lib/api";
+import { setActiveCourse, updateSettings } from "@/lib/api";
 
 interface OnboardingWizardProps {
   courseName: string;
@@ -35,15 +35,27 @@ export default function OnboardingWizard({ courseName, courseId, onBackToCourses
 
   const [showPlacementTest, setShowPlacementTest] = useState(false);
 
-  // Persist the course selection so /learn shows the chosen course.
+  // Persist the course selection and daily XP goal so /learn reflects
+  // the onboarding choices. Minutes -> XP goal (Duolingo-style mapping).
+  const DAILY_GOAL_XP: Record<string, number> = {
+    "5": 20,
+    "10": 40,
+    "15": 60,
+    "20": 80,
+  };
+
   const finishOnboarding = async () => {
     setIsFinishing(true);
     try {
       await setActiveCourse(courseId);
+      if (dailyGoal) {
+        await updateSettings({ daily_goal_xp: DAILY_GOAL_XP[dailyGoal] ?? 50 });
+      }
       queryClient.invalidateQueries({ queryKey: ["learningPath"] });
       queryClient.invalidateQueries({ queryKey: ["courses"] });
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
     } catch (err) {
-      console.error("Failed to set active course:", err);
+      console.error("Failed to save onboarding choices:", err);
     } finally {
       router.push("/learn");
     }

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Settings } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -15,10 +16,27 @@ export const MobileFooter = () => {
       <NavItem href="/leaderboard" iconSrc="/leaderboard.svg" isActive={pathname === "/leaderboard"} />
       <NavItem href="/quests" iconSrc="/quests.svg" isActive={pathname === "/quests"} />
       <NavItem href="/shop" iconSrc="/shop.svg" isActive={pathname === "/shop"} />
-      <NavItem href="/profile" iconSrc="/girl.svg" isActive={pathname === "/profile"} />
+      <SettingsNavItem href="/settings" isActive={pathname === "/settings"} />
     </div>
   );
 };
+
+function SettingsNavItem({ href, isActive }: { href: string; isActive: boolean }) {
+  return (
+    <Link href={href} className="flex flex-col items-center justify-center p-2 rounded-xl transition-colors">
+      <div
+        className={cn(
+          "relative p-2 rounded-xl",
+          isActive
+            ? "bg-sky-500/15 border-2 border-sky-300"
+            : "border-2 border-transparent"
+        )}
+      >
+        <Settings size={28} className="text-[var(--text-sub)]" />
+      </div>
+    </Link>
+  );
+}
 
 function NavItem({ href, iconSrc, isActive }: { href: string; iconSrc: string; isActive: boolean }) {
   return (
