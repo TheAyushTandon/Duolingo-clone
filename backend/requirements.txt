@@ -1,0 +1,20 @@
+fastapi>=0.115
+uvicorn[standard]>=0.30
+sqlalchemy>=2.0.30
+alembic>=1.13
+pydantic>=2.7
+pydantic-settings>=2.3
+python-dotenv>=1.0
+slowapi>=0.1.9
+requests>=2.32
+
+# Testing
+pytest>=8.0
+pytest-cov>=6.0
+httpx>=0.27
+
+# Quality / security toolchain
+ruff>=0.8
+mypy>=1.13
+bandit>=1.8
+pip-audit>=2.7

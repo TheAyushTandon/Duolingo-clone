@@ -5,7 +5,10 @@ import { Flame, Gem, Heart, Sparkles, Plus, Check } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchLearningPath, refillHearts } from "@/lib/api";
 import { useSound } from "@/hooks/useSound";
+import { ThemeToggle } from "@/components/theme-toggle";
+import Image from "next/image";
 import Link from "next/link";
+import { StreakPopover } from "@/components/streak/StreakPopover";
 
 export function TopBar() {
   const queryClient = useQueryClient();
@@ -61,58 +64,33 @@ export function TopBar() {
 
       {/* Gamification Stats Bar */}
       <div className="flex items-center gap-2 sm:gap-6">
-        {/* Streak Item */}
-        <div className="relative">
-          <button
-            onClick={() => {
-              playClick();
-              setActivePopover(activePopover === "streak" ? null : "streak");
-            }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-black text-sm tracking-wide transition-all ${
+        <StreakPopover
+          streak={stats.streak}
+          streakActiveToday={stats.streak_active_today}
+          activeDays={stats.active_days}
+          align="right"
+        >
+          <div
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-black text-sm tracking-wide transition-all cursor-pointer ${
               stats.streak > 0
-                ? "text-[#ff9600] hover:bg-amber-50"
-                : "text-slate-400 hover:bg-slate-100"
+                ? "text-[#FF9600] hover:bg-amber-500/10"
+                : "text-[var(--text-sub)] hover:bg-[var(--border-color)]/30"
             }`}
           >
-            <Flame
-              size={22}
-              className={`${stats.streak > 0 ? "fill-[#ff9600] animate-pulse" : "fill-slate-300"}`}
+            <Image
+              src="/streak.svg"
+              width={22}
+              height={22}
+              alt="Streak"
+              className={`transition-all ${
+                stats.streak > 0
+                  ? "drop-shadow-[0_0_8px_rgba(255,150,0,0.5)] animate-pulse"
+                  : "grayscale opacity-40"
+              }`}
             />
             <span>{stats.streak}</span>
-          </button>
-
-          {/* Streak Popover */}
-          {activePopover === "streak" && (
-            <div className="absolute right-0 top-12 w-64 p-4 bg-white border-2 border-slate-200 rounded-2xl shadow-xl z-50 animate-in fade-in zoom-in-95 duration-150">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                  <Flame size={24} className="text-[#ff9600] fill-[#ff9600]" />
-                </div>
-                <div>
-                  <h4 className="font-black text-slate-800 text-sm">
-                    {stats.streak} Day Streak!
-                  </h4>
-                  <p className="text-xs font-bold text-slate-500">
-                    Practice daily to stay sharp
-                  </p>
-                </div>
-              </div>
-              <p className="text-xs text-slate-600 font-semibold mb-3">
-                Complete a lesson today to maintain your streak continuity and earn bonus streak achievements!
-              </p>
-              <Link
-                href="/learn"
-                onClick={() => {
-                  playClick();
-                  setActivePopover(null);
-                }}
-                className="block text-center py-2 rounded-xl bg-[#58cc02] text-white font-black text-xs uppercase tracking-wider hover:bg-[#46a302] transition-colors"
-              >
-                Practice Today
-              </Link>
-            </div>
-          )}
-        </div>
+          </div>
+        </StreakPopover>
 
         {/* Gems Item */}
         <div className="relative">
@@ -123,7 +101,7 @@ export function TopBar() {
             }}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-black text-sm text-[#1cb0f6] hover:bg-sky-50 transition-all tracking-wide"
           >
-            <Gem size={20} className="fill-[#1cb0f6]" />
+            <Image src="/points.svg" width={20} height={20} alt="Gems" />
             <span>{stats.gems}</span>
           </button>
 
@@ -132,7 +110,7 @@ export function TopBar() {
             <div className="absolute right-0 top-12 w-64 p-4 bg-white border-2 border-slate-200 rounded-2xl shadow-xl z-50 animate-in fade-in zoom-in-95 duration-150">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center">
-                  <Gem size={22} className="text-[#1cb0f6] fill-[#1cb0f6]" />
+                  <Image src="/points.svg" width={22} height={22} alt="Gems" />
                 </div>
                 <div>
                   <h4 className="font-black text-slate-800 text-sm">
@@ -169,7 +147,7 @@ export function TopBar() {
             }}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-black text-sm text-[#ff4b4b] hover:bg-rose-50 transition-all tracking-wide"
           >
-            <Heart size={22} className="fill-[#ff4b4b]" />
+            <Image src="/heart.svg" width={20} height={20} alt="Hearts" />
             <span>{stats.hearts}</span>
           </button>
 
@@ -178,7 +156,7 @@ export function TopBar() {
             <div className="absolute right-0 top-12 w-72 p-4 bg-white border-2 border-slate-200 rounded-2xl shadow-xl z-50 animate-in fade-in zoom-in-95 duration-150">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
-                  <Heart size={24} className="text-[#ff4b4b] fill-[#ff4b4b]" />
+                  <Image src="/heart.svg" width={24} height={24} alt="Hearts" />
                 </div>
                 <div>
                   <h4 className="font-black text-slate-800 text-sm">
@@ -227,6 +205,9 @@ export function TopBar() {
             </div>
           )}
         </div>
+
+        {/* Theme Toggle */}
+        <ThemeToggle />
       </div>
     </header>
   );

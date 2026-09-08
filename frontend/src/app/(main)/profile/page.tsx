@@ -1,184 +1,198 @@
 "use client";
 
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchProfile, fetchProfileStats } from "@/lib/api";
-import { 
-  Flame, 
-  Zap, 
-  Shield, 
-  Trophy, 
-  Clock, 
-  Calendar, 
-  Wrench, 
-  Check, 
-  UserCheck 
-} from "lucide-react";
-import { usePreferencesStore } from "@/stores/usePreferencesStore";
-import { useSound } from "@/hooks/useSound";
+import { FeedWrapper } from "@/components/feed-wrapper";
+import { StickyWrapper } from "@/components/sticky-wrapper";
+import { LiveUserProgress } from "@/components/live-user-progress";
+import { LiveQuests } from "@/components/live-quests";
+import { Zap, Flame, Trophy, Target, BookOpen, Crown, LogOut } from "lucide-react";
 
-export function ProfilePage() {
-  const { toggleDevTools } = usePreferencesStore();
-  const { playClick } = useSound();
+import { useAchievements, useProfile, useProfileStats } from "@/hooks/useUserData";
+import { logout } from "@/lib/api";
 
-  const { data: profile, isLoading } = useQuery({
-    queryKey: ["profile"],
-    queryFn: fetchProfile,
-  });
+export default function ProfilePage() {
+  const { data: profile } = useProfile();
+  const { data: stats } = useProfileStats();
+  const { data: achievements } = useAchievements();
 
-  const { data: stats } = useQuery({
-    queryKey: ["profileStats"],
-    queryFn: fetchProfileStats,
-  });
-
-  if (isLoading) {
-    return (
-      <div className="w-full max-w-2xl mx-auto py-8 px-4 space-y-6 animate-pulse">
-        <div className="h-40 bg-slate-100 rounded-3xl" />
-        <div className="grid grid-cols-2 gap-4">
-          <div className="h-28 bg-slate-100 rounded-3xl" />
-          <div className="h-28 bg-slate-100 rounded-3xl" />
-        </div>
-      </div>
-    );
-  }
-
-  const user = profile || {
-    username: "LanguageHero",
-    email: "learner@duo.clone",
-    avatar_url: "https://api.dicebear.com/7.x/bottts/svg?seed=DuoLearner",
-    xp: 135,
-    streak: 3,
-    gems: 465,
-    achievements: [],
-  };
+  const unlocked = achievements?.filter((a) => a.is_unlocked) ?? [];
 
   return (
-    <div className="w-full max-w-2xl mx-auto py-8 px-4 select-none pb-24 space-y-8">
-      {/* Profile Header Card */}
-      <div className="p-6 sm:p-8 rounded-3xl border-2 border-slate-200 bg-white flex flex-col sm:flex-row items-center sm:items-start gap-6">
-        {/* Avatar */}
-        <div className="w-24 h-24 rounded-full bg-slate-100 border-4 border-[#58cc02] overflow-hidden flex items-center justify-center text-4xl shrink-0 shadow-md">
-          {user.avatar_url?.startsWith("http") ? (
-            <img src={user.avatar_url} alt={user.username} className="w-full h-full" />
-          ) : (
-            <span>🦉</span>
-          )}
-        </div>
+    <div className="flex flex-row-reverse gap-[48px] px-6">
+      <StickyWrapper>
+        <LiveUserProgress />
+        <LiveQuests />
+      </StickyWrapper>
 
-        {/* Info */}
-        <div className="flex-1 text-center sm:text-left space-y-2">
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-800 leading-tight">
-            {user.username}
-          </h1>
-          <p className="text-xs font-bold text-slate-400">
-            @{user.username.toLowerCase()} • Joined September 2026
-          </p>
+      <FeedWrapper>
+        <div className="w-full flex flex-col gap-y-8 pb-12">
+          {/* Identity header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-5">
+              <div className="relative w-20 h-20 rounded-full border-4 border-[var(--border-color)] bg-[var(--bg-sidebar)] flex items-center justify-center text-3xl font-black text-[var(--text-sub)] uppercase">
+                {profile?.username?.charAt(0) ?? "?"}
+                <div className="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-green-500 border-2 border-white dark:border-[#131F24]" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-black text-[var(--text-main)]">
+                  {profile?.username?.replace("_", " ") ?? "Learner"}
+                </h1>
+                <p className="text-sm font-semibold text-[var(--text-sub)]">
+                  {profile?.streak_active_today
+                    ? "Active today — streak secured! 🔥"
+                    : "Complete a lesson to keep your streak!"}
+                </p>
+              </div>
+            </div>
 
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 pt-2 text-xs font-black text-slate-600">
-            <span className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100">
-              <span>🇪🇸</span> Spanish
-            </span>
-            <span className="flex items-center gap-1 text-slate-500">
-              <UserCheck size={16} /> 0 Following • 1 Follower
-            </span>
+            <button
+              onClick={logout}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-2xl border-2 border-[var(--border-color)] text-[var(--text-sub)] hover:text-rose-500 hover:border-rose-300 hover:bg-rose-500/10 font-black text-sm uppercase tracking-wider transition-all cursor-pointer"
+            >
+              <LogOut size={18} />
+              <span>Log out</span>
+            </button>
+          </div>
+
+          {/* Stats grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <StatCard
+              label="Total XP"
+              value={profile?.xp ?? 0}
+              icon={<Zap size={22} className="text-amber-500 fill-amber-500" />}
+              accent="amber"
+            />
+            <StatCard
+              label="Streak"
+              value={profile?.streak ?? 0}
+              icon={<Flame size={22} className="text-orange-500 fill-orange-500" />}
+              accent="orange"
+            />
+            <StatCard
+              label="Gems"
+              value={profile?.gems ?? 0}
+              icon={<span className="text-xl">💎</span>}
+              accent="sky"
+            />
+          </div>
+
+          {/* Lifetime stats */}
+          <div className="rounded-3xl border-2 border-[var(--border-color)] bg-[var(--bg-sidebar)] p-6 space-y-4">
+            <h2 className="text-lg font-black text-[var(--text-main)]">
+              Learning stats
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="flex items-center gap-3">
+                <BookOpen size={20} className="text-emerald-500 shrink-0" />
+                <div>
+                  <div className="text-xl font-black text-[var(--text-main)]">
+                    {stats?.total_lessons_completed ?? 0}
+                  </div>
+                  <div className="text-xs font-bold uppercase tracking-wider text-[var(--text-sub)]">
+                    Lessons completed
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Target size={20} className="text-[#58cc02] shrink-0" />
+                <div>
+                  <div className="text-xl font-black text-[var(--text-main)]">
+                    {stats?.skills_completed ?? 0}
+                  </div>
+                  <div className="text-xs font-bold uppercase tracking-wider text-[var(--text-sub)]">
+                    Skills completed
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Trophy size={20} className="text-purple-500 shrink-0" />
+                <div>
+                  <div className="text-xl font-black text-[var(--text-main)]">
+                    {stats?.achievements_count ?? 0}
+                  </div>
+                  <div className="text-xs font-bold uppercase tracking-wider text-[var(--text-sub)]">
+                    Achievements
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Achievements */}
+          <div className="space-y-4">
+            <h2 className="text-lg font-black text-[var(--text-main)] flex items-center gap-2">
+              <Trophy size={20} className="text-purple-500" />
+              Achievements ({unlocked.length}/{achievements?.length ?? 0})
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {achievements?.map((achievement) => (
+                <div
+                  key={achievement.id}
+                  className={`rounded-2xl border-2 p-4 flex items-center gap-4 transition-colors ${
+                    achievement.is_unlocked
+                      ? "border-purple-200 bg-purple-50 dark:bg-purple-950/20"
+                      : "border-[var(--border-color)] bg-[var(--bg-sidebar)] opacity-60"
+                  }`}
+                >
+                  <div
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 ${
+                      achievement.is_unlocked
+                        ? "bg-purple-100"
+                        : "bg-[var(--border-color)] grayscale"
+                    }`}
+                  >
+                    {achievement.icon || "🏅"}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-black text-sm text-[var(--text-main)]">
+                        {achievement.name}
+                      </h4>
+                      {achievement.is_unlocked && (
+                        <Crown size={14} className="text-[#FFC800] fill-[#FFC800]" />
+                      )}
+                    </div>
+                    <p className="text-xs font-semibold text-[var(--text-sub)]">
+                      {achievement.description}
+                    </p>
+                    <p className="text-[11px] font-bold text-amber-500 mt-0.5">
+                      +{achievement.xp_reward} XP
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Statistics Section */}
-      <section className="space-y-4">
-        <h2 className="text-xl font-black text-slate-800 tracking-tight">
-          Statistics
-        </h2>
-
-        <div className="grid grid-cols-2 gap-4">
-          {/* Day Streak */}
-          <div className="p-4 rounded-3xl border-2 border-slate-200 bg-white flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center text-[#ff9600]">
-              <Flame size={26} className="fill-[#ff9600]" />
-            </div>
-            <div>
-              <span className="font-black text-xl text-slate-800 block">
-                {user.streak}
-              </span>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                Day Streak
-              </span>
-            </div>
-          </div>
-
-          {/* Total XP */}
-          <div className="p-4 rounded-3xl border-2 border-slate-200 bg-white flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center text-[#ffc800]">
-              <Zap size={26} className="fill-[#ffc800]" />
-            </div>
-            <div>
-              <span className="font-black text-xl text-slate-800 block">
-                {user.xp}
-              </span>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                Total XP
-              </span>
-            </div>
-          </div>
-
-          {/* Current League */}
-          <div className="p-4 rounded-3xl border-2 border-slate-200 bg-white flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-sky-50 border-2 border-sky-200 flex items-center justify-center text-[#1cb0f6]">
-              <Shield size={26} className="fill-[#1cb0f6]" />
-            </div>
-            <div>
-              <span className="font-black text-xl text-slate-800 block">
-                Bronze
-              </span>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                Current League
-              </span>
-            </div>
-          </div>
-
-          {/* Top 3 Finishes */}
-          <div className="p-4 rounded-3xl border-2 border-slate-200 bg-white flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-purple-50 border-2 border-purple-200 flex items-center justify-center text-[#ce82ff]">
-              <Trophy size={26} className="fill-[#ce82ff]" />
-            </div>
-            <div>
-              <span className="font-black text-xl text-slate-800 block">
-                1
-              </span>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                Top 3 Finishes
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Developer Sandbox Section */}
-      <section className="p-6 rounded-3xl border-2 border-amber-200 bg-amber-50/60 flex items-center justify-between">
-        <div>
-          <h3 className="font-black text-base text-amber-900 flex items-center gap-2">
-            <Wrench size={18} />
-            Developer Simulation Sandbox
-          </h3>
-          <p className="text-xs font-bold text-amber-700 mt-1">
-            Simulate day rollovers, test streak continuity, reset progress, or refill hearts.
-          </p>
-        </div>
-
-        <button
-          onClick={() => {
-            playClick();
-            toggleDevTools();
-          }}
-          className="px-4 py-2.5 rounded-2xl bg-amber-500 text-white font-black text-xs uppercase tracking-wider shadow-[0_3px_0_#b45309] hover:bg-amber-600 active:translate-y-0.5 active:shadow-none transition-all shrink-0"
-        >
-          OPEN SANDBOX
-        </button>
-      </section>
+      </FeedWrapper>
     </div>
   );
 }
 
-export default ProfilePage;
+function StatCard({
+  label,
+  value,
+  icon,
+  accent,
+}: {
+  label: string;
+  value: number;
+  icon: React.ReactNode;
+  accent: "amber" | "orange" | "sky";
+}) {
+  const accents = {
+    amber: "border-amber-300 bg-amber-50 dark:bg-amber-950/20 text-amber-600",
+    orange: "border-orange-300 bg-orange-50 dark:bg-orange-950/20 text-orange-600",
+    sky: "border-sky-300 bg-sky-50 dark:bg-sky-950/20 text-sky-600",
+  };
+
+  return (
+    <div className={`rounded-3xl border-2 p-4 flex flex-col items-center gap-1 ${accents[accent]}`}>
+      <span className="text-[10px] font-black uppercase tracking-wider">{label}</span>
+      <div className="flex items-center gap-1.5 font-black text-2xl">
+        {icon}
+        <span>{value}</span>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,20 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: sqlite:///./data/duolingo_clone.db
+      ENVIRONMENT: development
+      DEBUG: "true"
+      ENABLE_DEV_TOOLS: "true"
+      SECRET_KEY: dev-only-insecure-secret-key-change-me
+      CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+      LOG_LEVEL: INFO
+    volumes:
+      - db-data:/app/data
+      - app-logs:/app/logs
+
+volumes:
+  db-data:
+  app-logs:

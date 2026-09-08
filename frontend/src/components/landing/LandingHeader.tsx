@@ -45,7 +45,11 @@ const COLUMN_2_LANGUAGES: SiteLanguage[] = [
   { name: "中文", flag: "/assets/flags/9905aa3a86fcb9e351b0b3bfaf04d8b9.svg" },
 ];
 
-export function LandingHeader() {
+interface LandingHeaderProps {
+  onOpenAuth?: (mode: "login" | "register") => void;
+}
+
+export function LandingHeader({ onOpenAuth }: LandingHeaderProps = {}) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentLang, setCurrentLang] = useState("ENGLISH");
@@ -53,7 +57,7 @@ export function LandingHeader() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 280);
+      setIsScrolled(window.scrollY > 80);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -70,15 +74,42 @@ export function LandingHeader() {
     }, 250);
   };
 
+  const [showError, setShowError] = useState(false);
+
+  useEffect(() => {
+    if (showError) {
+      const timer = setTimeout(() => setShowError(false), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [showError]);
+
+  const handleLanguageClick = (langName: string) => {
+    if (langName === "English" || langName === "हिंदी") {
+      setCurrentLang(langName === "हिंदी" ? "HINDI" : "ENGLISH");
+      setIsOpen(false);
+    } else {
+      setShowError(true);
+      setIsOpen(false);
+    }
+  };
+
   return (
-    <header
-      className={`sticky top-0 z-50 w-full bg-white/95 backdrop-blur-xs transition-all duration-200 ${
-        isScrolled ? "border-b border-[#E5E5E5] shadow-xs" : "border-b border-transparent"
-      }`}
-    >
-      <div className="w-full max-w-7xl mx-auto px-6 lg:px-12 h-18 flex items-center justify-between select-none relative">
+    <>
+      {/* Placeholder to prevent layout shift since header is fixed */}
+      <div className="h-18 w-full shrink-0" />
+      
+      <header
+        className={`fixed top-0 left-0 z-50 w-full bg-white/95 backdrop-blur-xs transition-all duration-200 ${
+          isScrolled ? "border-b border-[#E5E5E5] shadow-xs" : "border-b border-transparent"
+        }`}
+      >
+      <div
+        className={`w-full max-w-[750px] mx-auto px-4 sm:px-6 lg:px-12 h-18 flex items-center transition-all duration-300 ease-in-out select-none relative ${
+          isScrolled ? "justify-between" : "justify-center md:justify-between"
+        }`}
+      >
         {/* Duolingo Brand Logo */}
-        <Link href="/" className="flex items-center group">
+        <Link href="/" className="flex items-center group transition-all duration-300 ease-in-out">
           <img
             src="/duolingo.svg"
             alt="Duolingo"
@@ -86,17 +117,26 @@ export function LandingHeader() {
           />
         </Link>
 
-        {/* Right Action: Switches between Site Language trigger (at top) and GET STARTED (when scrolled) */}
+        {/* Right Action: Switches between Site Language trigger (at top, hidden on phone UI) and GET STARTED (when scrolled) */}
         {isScrolled ? (
-          <Link
-            href="/learn"
-            className="py-2.5 px-6 rounded-2xl bg-[#58CC02] text-white font-black text-[13px] uppercase tracking-wider shadow-[0_3px_0_#46A302] hover:brightness-105 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
-          >
-            GET STARTED
-          </Link>
+          onOpenAuth ? (
+            <button
+              onClick={() => onOpenAuth("register")}
+              className="py-2 px-5 sm:py-2.5 sm:px-6 rounded-2xl bg-[#58CC02] text-white font-black text-[13px] uppercase tracking-wider shadow-[0_3px_0_#46A302] hover:brightness-105 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer shrink-0 animate-in fade-in duration-200"
+            >
+              GET STARTED
+            </button>
+          ) : (
+            <Link
+              href="/register"
+              className="py-2 px-5 sm:py-2.5 sm:px-6 rounded-2xl bg-[#58CC02] text-white font-black text-[13px] uppercase tracking-wider shadow-[0_3px_0_#46A302] hover:brightness-105 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer shrink-0 animate-in fade-in duration-200"
+            >
+              GET STARTED
+            </Link>
+          )
         ) : (
           <div
-            className="relative"
+            className="hidden md:block relative"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
@@ -127,10 +167,7 @@ export function LandingHeader() {
                       {COLUMN_1_LANGUAGES.map((item) => (
                         <button
                           key={item.name}
-                          onClick={() => {
-                            setCurrentLang(item.name.toUpperCase());
-                            setIsOpen(false);
-                          }}
+                          onClick={() => handleLanguageClick(item.name)}
                           className="group flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-[14px] font-bold text-[#4B4B4B] hover:bg-[#F1F7FB] hover:text-[#1CB0F6] transition-colors text-left cursor-pointer"
                         >
                           <img
@@ -148,10 +185,7 @@ export function LandingHeader() {
                       {COLUMN_2_LANGUAGES.map((item) => (
                         <button
                           key={item.name}
-                          onClick={() => {
-                            setCurrentLang(item.name.toUpperCase());
-                            setIsOpen(false);
-                          }}
+                          onClick={() => handleLanguageClick(item.name)}
                           className="group flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-[14px] font-bold text-[#4B4B4B] hover:bg-[#F1F7FB] hover:text-[#1CB0F6] transition-colors text-left cursor-pointer"
                         >
                           <img
@@ -171,5 +205,18 @@ export function LandingHeader() {
         )}
       </div>
     </header>
+    
+    {/* Error Toast */}
+    {showError && (
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-6 py-4 bg-[#FF4B4B] text-white rounded-2xl shadow-[0_4px_16px_rgba(255,75,75,0.4)] font-bold text-sm sm:text-base tracking-wide max-w-[90%] w-max text-center animate-in slide-in-from-bottom-5 fade-in duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>Only English and Hindi are available in this section.</span>
+      </div>
+    )}
+    </>
   );
 }

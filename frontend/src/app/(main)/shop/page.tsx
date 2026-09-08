@@ -1,204 +1,168 @@
 "use client";
 
-import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchLearningPath, refillHearts } from "@/lib/api";
-import { 
-  Heart, 
-  Gem, 
-  Snowflake, 
-  Flame, 
-  Sparkles, 
-  Check, 
-  ShieldAlert 
-} from "lucide-react";
+import { useState } from "react";
+import { FeedWrapper } from "@/components/feed-wrapper";
+import { StickyWrapper } from "@/components/sticky-wrapper";
+import { LiveUserProgress } from "@/components/live-user-progress";
+import { LiveQuests } from "@/components/live-quests";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Heart, Zap, CheckCircle2 } from "lucide-react";
+
+import { refillHearts } from "@/lib/api";
+import { useLearningPath } from "@/hooks/useUserData";
 import { useSound } from "@/hooks/useSound";
-import confetti from "canvas-confetti";
 
-export function ShopPage() {
+const REFILL_COST = 350;
+
+export default function ShopPage() {
   const queryClient = useQueryClient();
-  const { playClick, playCorrect, playHeartLost, playFanfare } = useSound();
+  const { data: path } = useLearningPath();
+  const { playCorrect, playHeartLost } = useSound();
   const [feedback, setFeedback] = useState<string | null>(null);
-  const [isSuperActive, setIsSuperActive] = useState(false);
-
-  const { data: pathData } = useQuery({
-    queryKey: ["learningPath"],
-    queryFn: fetchLearningPath,
-  });
-
-  const stats = pathData?.user_stats || {
-    gems: 450,
-    hearts: 5,
-    max_hearts: 5,
-  };
 
   const refillMutation = useMutation({
     mutationFn: () => refillHearts(false),
-    onSuccess: (res) => {
+    onSuccess: (data) => {
       playCorrect();
-      setFeedback("Hearts successfully refilled to 5!");
+      setFeedback(`Hearts refilled to ${data.hearts}/${data.max_hearts}!`);
       queryClient.invalidateQueries({ queryKey: ["learningPath"] });
-      setTimeout(() => setFeedback(null), 3000);
     },
     onError: (err: Error) => {
       playHeartLost();
-      setFeedback(`Error: ${err.message}`);
-      setTimeout(() => setFeedback(null), 3000);
+      setFeedback(err.message);
     },
   });
 
-  const handleSuperTrial = () => {
-    playFanfare();
-    setIsSuperActive(true);
-    confetti({
-      particleCount: 50,
-      spread: 60,
-      origin: { y: 0.6 },
-      colors: ["#6366f1", "#a855f7", "#ec4899"],
-    });
-    setFeedback("Super Duolingo activated! Enjoy unlimited hearts!");
-    setTimeout(() => setFeedback(null), 4000);
-  };
+  const gems = path?.user_stats.gems ?? 0;
+  const hearts = path?.user_stats.hearts ?? 0;
+  const maxHearts = path?.user_stats.max_hearts ?? 5;
+  const heartsFull = hearts >= maxHearts;
+  const canAfford = gems >= REFILL_COST;
 
   return (
-    <div className="w-full max-w-2xl mx-auto py-8 px-4 select-none pb-24 space-y-10">
-      {/* Super Duolingo Hero Card */}
-      <div className="rounded-3xl border-2 border-indigo-200 bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
-        <div className="max-w-md space-y-3 relative z-10">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-black uppercase tracking-widest text-amber-300">
-            <Sparkles size={14} className="fill-amber-300" />
-            SUPER DUOLINGO
+    <div className="flex flex-row-reverse gap-[48px] px-6">
+      <StickyWrapper>
+        <LiveUserProgress />
+        <LiveQuests />
+
+        {/* Gem balance card */}
+        <div className="rounded-2xl border-2 border-[var(--border-color)] bg-[var(--bg-sidebar)] p-4 space-y-3 text-center">
+          <div className="flex items-center justify-center gap-2">
+            <Image src="/points.svg" width={28} height={28} alt="Gems" />
+            <span className="text-2xl font-black text-sky-500">{gems}</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black leading-tight">
-            Learn faster with Super
-          </h2>
-          <p className="text-xs sm:text-sm font-semibold text-indigo-100">
-            No ads, unlimited hearts, and unlimited mistake practice sessions.
+          <p className="text-xs font-bold uppercase tracking-wider text-[var(--text-sub)]">
+            Your gem balance
           </p>
-          <button
-            onClick={handleSuperTrial}
-            disabled={isSuperActive}
-            className="mt-2 px-6 py-3 rounded-2xl bg-white text-indigo-600 font-black text-xs uppercase tracking-wider shadow-[0_4px_0_#c7d2fe] hover:bg-indigo-50 active:translate-y-1 active:shadow-none transition-all"
-          >
-            {isSuperActive ? "SUPER ACTIVATED ✨" : "START 2-WEEK FREE TRIAL"}
-          </button>
+          <p className="text-[11px] text-[var(--text-sub)]">
+            Earn gems by completing lessons (+5) and unlocking achievements (+10).
+          </p>
         </div>
-      </div>
+      </StickyWrapper>
 
-      {/* Feedback Toast */}
-      {feedback && (
-        <div className="p-4 rounded-2xl bg-sky-50 border-2 border-sky-200 text-xs font-black text-sky-800 animate-in fade-in flex items-center justify-between">
-          <span>{feedback}</span>
-          <Check size={18} className="text-sky-600" />
-        </div>
-      )}
-
-      {/* Hearts Section */}
-      <section className="space-y-4">
-        <h3 className="font-black text-xl text-slate-800 tracking-tight">
-          Hearts
-        </h3>
-
-        <div className="p-5 rounded-3xl border-2 border-slate-200 bg-white flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-rose-50 border-2 border-rose-200 flex items-center justify-center text-[#ff4b4b] shrink-0">
-              <Heart size={30} className="fill-[#ff4b4b]" />
+      <FeedWrapper>
+        <div className="relative w-full flex flex-col gap-y-6">
+          {feedback && (
+            <div className="rounded-2xl border-2 border-sky-200 bg-sky-50 p-4 text-sm font-bold text-sky-700 animate-in fade-in">
+              {feedback}
             </div>
-            <div>
-              <h4 className="font-black text-base text-slate-800">
-                Refill Hearts
-              </h4>
-              <p className="text-xs font-semibold text-slate-500">
-                Get full hearts so you can keep learning without pauses.
-              </p>
+          )}
+
+          <h1 className="text-2xl font-black text-[var(--text-main)]">Shop</h1>
+
+          {/* Hearts */}
+          <h2 className="text-lg font-black text-[var(--text-main)]">Hearts</h2>
+          <div className="flex items-center justify-between rounded-2xl border-2 border-[var(--border-color)] bg-[var(--bg-sidebar)] p-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-rose-500/10 flex items-center justify-center">
+                <Heart className="w-7 h-7 text-rose-500 fill-rose-500" />
+              </div>
+              <div>
+                <h4 className="font-bold text-sm text-[var(--text-main)]">
+                  Refill Hearts
+                </h4>
+                <p className="text-xs text-[var(--text-sub)]">
+                  Get full hearts so you can worry less about making mistakes
+                </p>
+              </div>
             </div>
+            <Button
+              variant="primary"
+              className="text-xs uppercase font-black shrink-0 flex items-center gap-1.5"
+              disabled={heartsFull || !canAfford || refillMutation.isPending}
+              onClick={() => refillMutation.mutate()}
+            >
+              {heartsFull ? (
+                "Full"
+              ) : (
+                <>
+                  <Zap className="w-4 h-4" />
+                  {REFILL_COST}
+                </>
+              )}
+            </Button>
           </div>
+          {!heartsFull && !canAfford && (
+            <p className="text-xs font-bold text-[var(--text-sub)] -mt-3 ml-2">
+              You need {REFILL_COST - gems} more gems — complete lessons to earn them!
+            </p>
+          )}
 
-          <button
-            onClick={() => refillMutation.mutate()}
-            disabled={stats.hearts >= stats.max_hearts || stats.gems < 350 || refillMutation.isPending}
-            className={`px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all shrink-0 ${
-              stats.hearts >= stats.max_hearts
-                ? "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200"
-                : "bg-[#1cb0f6] text-white shadow-[0_4px_0_#1899d6] hover:bg-[#1899d6] active:translate-y-1 active:shadow-none"
-            }`}
+          {/* Super Duolingo */}
+          <h2 className="text-lg font-black text-[var(--text-main)]">Super Duolingo</h2>
+          <Link
+            href="/efficiency"
+            className="flex items-center justify-between rounded-2xl border-2 border-[var(--border-color)] bg-gradient-to-r from-sky-500/10 to-purple-500/10 p-4 hover:border-sky-300 transition-colors"
           >
-            {stats.hearts >= stats.max_hearts ? (
-              <span>FULL</span>
-            ) : (
-              <>
-                <span>350</span>
-                <Gem size={14} className="fill-white" />
-              </>
-            )}
-          </button>
-        </div>
-      </section>
-
-      {/* Power-ups Section */}
-      <section className="space-y-4">
-        <h3 className="font-black text-xl text-slate-800 tracking-tight">
-          Power-Ups
-        </h3>
-
-        {/* Streak Freeze */}
-        <div className="p-5 rounded-3xl border-2 border-slate-200 bg-white flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-sky-50 border-2 border-sky-200 flex items-center justify-center text-sky-500 shrink-0">
-              <Snowflake size={30} />
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-2xl">
+                ⚡
+              </div>
+              <div>
+                <h4 className="font-bold text-sm text-[var(--text-main)]">
+                  Super Duolingo
+                </h4>
+                <p className="text-xs text-[var(--text-sub)]">
+                  Unlimited hearts, no ads, and unlimited legendary lessons
+                </p>
+              </div>
             </div>
-            <div>
-              <h4 className="font-black text-base text-slate-800">
-                Streak Freeze
-              </h4>
-              <p className="text-xs font-semibold text-slate-500">
-                Streak Freeze allows your streak to remain intact for one full day of inactivity.
-              </p>
+            <span className="text-xs font-black uppercase tracking-wider text-purple-500">
+              Try free
+            </span>
+          </Link>
+
+          {/* Power-Ups (coming soon) */}
+          <h2 className="text-lg font-black text-[var(--text-main)]">Power-Ups</h2>
+          <div className="flex items-center justify-between rounded-2xl border-2 border-[var(--border-color)] bg-[var(--bg-sidebar)] p-4 opacity-60">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-sky-500/10 flex items-center justify-center text-2xl">
+                🧊
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h4 className="font-bold text-sm text-[var(--text-main)]">
+                    Streak Freeze
+                  </h4>
+                  <span className="text-xs font-bold text-green-500 flex items-center gap-1">
+                    <CheckCircle2 size={12} /> Coming soon
+                  </span>
+                </div>
+                <p className="text-xs text-[var(--text-sub)]">
+                  Streak Freeze allows your streak to remain in place for one full day
+                  of inactivity.
+                </p>
+              </div>
             </div>
+            <Button disabled variant="default" className="text-xs uppercase font-black">
+              Equipped
+            </Button>
           </div>
-
-          <button
-            onClick={() => {
-              playCorrect();
-              setFeedback("Streak Freeze equipped!");
-            }}
-            className="px-5 py-3 rounded-2xl bg-[#1cb0f6] text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-[0_4px_0_#1899d6] hover:bg-[#1899d6] active:translate-y-1 active:shadow-none transition-all shrink-0"
-          >
-            <span>200</span>
-            <Gem size={14} className="fill-white" />
-          </button>
         </div>
-
-        {/* Double or Nothing */}
-        <div className="p-5 rounded-3xl border-2 border-slate-200 bg-white flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center text-amber-500 shrink-0">
-              <Flame size={30} className="fill-amber-500" />
-            </div>
-            <div>
-              <h4 className="font-black text-base text-slate-800">
-                Double or Nothing
-              </h4>
-              <p className="text-xs font-semibold text-slate-500">
-                Attempt to double your 50 gem wager by maintaining a 7-day streak.
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={() => {
-              playCorrect();
-              setFeedback("Wager accepted! Maintain 7 days to double your gems!");
-            }}
-            className="px-5 py-3 rounded-2xl bg-[#ffc800] text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-[0_4px_0_#e5a500] hover:bg-[#e5a500] active:translate-y-1 active:shadow-none transition-all shrink-0"
-          >
-            <span>50</span>
-            <Gem size={14} className="fill-white" />
-          </button>
-        </div>
-      </section>
+      </FeedWrapper>
     </div>
   );
 }
-
-export default ShopPage;

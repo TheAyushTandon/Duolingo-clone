@@ -50,14 +50,14 @@ export function LessonCompleteModal({ data, accuracy }: LessonCompleteModalProps
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/95 backdrop-blur-md animate-in fade-in duration-300 select-none">
       <div className="w-full max-w-md flex flex-col items-center text-center space-y-6">
-        {/* Celebrating Mascot */}
-        <div className="w-40 h-40">
-          <DuoMascot mood="celebrate" className="w-full h-full" />
+        {/* Celebrating Duolingo Owl Mascot SVG */}
+        <div className="w-52 h-52 flex items-center justify-center">
+          <DuoMascot mood="celebrate" size={200} className="w-full h-full" />
         </div>
 
         {/* Headline */}
         <div>
-          <h2 className="text-3xl sm:text-4xl font-black text-[#ffc800] tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-[#58cc02] tracking-tight">
             Lesson Complete!
           </h2>
           <p className="text-sm font-bold text-slate-500 mt-1">

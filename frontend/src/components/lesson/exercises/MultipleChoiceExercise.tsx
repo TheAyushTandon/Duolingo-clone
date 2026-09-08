@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { Volume2, User, Smile } from "lucide-react";
 import { SelectOption } from "@/types";
 import { useSound } from "@/hooks/useSound";
+import { matchOptionSvg } from "@/lib/question-assets";
 
 interface MultipleChoiceExerciseProps {
   prompt: string;
@@ -11,6 +12,7 @@ interface MultipleChoiceExerciseProps {
   selectedOptionId: string | null;
   onSelect: (optionId: string) => void;
   disabled: boolean;
+  locale?: string;
 }
 
 export function MultipleChoiceExercise({
@@ -19,6 +21,7 @@ export function MultipleChoiceExercise({
   selectedOptionId,
   onSelect,
   disabled,
+  locale = "es-ES",
 }: MultipleChoiceExerciseProps) {
   const { playClick, speak } = useSound();
 
@@ -43,7 +46,7 @@ export function MultipleChoiceExercise({
     <div className="w-full max-w-2xl mx-auto space-y-8 select-none">
       {/* Prompt Header */}
       <div className="flex items-center gap-3">
-        <h2 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight">
+        <h2 className="text-2xl sm:text-3xl font-black text-[var(--text-main)] tracking-tight">
           {prompt}
         </h2>
       </div>
@@ -60,14 +63,14 @@ export function MultipleChoiceExercise({
                 if (!disabled) {
                   playClick();
                   onSelect(option.id);
-                  speak(option.text, "es-ES");
+                  speak(option.text, locale);
                 }
               }}
               disabled={disabled}
               className={`relative rounded-3xl p-5 border-2 border-b-4 flex flex-col items-center justify-between text-center transition-all duration-150 min-h-[170px] ${
                 isSelected
-                  ? "bg-[#ddf4ff] border-[#84d8ff] border-b-[#53b4e6] text-[#1cb0f6] shadow-sm"
-                  : "bg-white border-slate-200 border-b-slate-300 hover:bg-slate-50 text-slate-700"
+                  ? "bg-[#ddf4ff] border-[#84d8ff] border-b-[#53b4e6] text-[#1cb0f6] shadow-sm dark:bg-[#1a384c] dark:border-[#1cb0f6]"
+                  : "bg-[var(--bg-sidebar)] border-[var(--border-color)] hover:bg-[var(--border-color)]/20 text-[var(--text-main)]"
               }`}
             >
               {/* Keyboard Shortcut Number Badge */}
@@ -75,7 +78,7 @@ export function MultipleChoiceExercise({
                 className={`absolute top-3 left-3 w-6 h-6 rounded-lg text-xs font-black flex items-center justify-center border ${
                   isSelected
                     ? "bg-[#84d8ff] text-white border-[#53b4e6]"
-                    : "bg-slate-100 text-slate-400 border-slate-200"
+                    : "bg-[var(--border-color)]/40 text-[var(--text-sub)] border-[var(--border-color)]"
                 }`}
               >
                 {idx + 1}
@@ -84,25 +87,23 @@ export function MultipleChoiceExercise({
               {/* Visual Icon Illustration */}
               <div className="my-auto pt-4 flex flex-col items-center">
                 <div
-                  className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-3 transition-transform ${
+                  className={`w-20 h-20 rounded-2xl flex items-center justify-center mb-3 transition-transform ${
                     isSelected ? "scale-110" : ""
-                  } ${
-                    option.image === "boy"
-                      ? "bg-sky-100 text-sky-500"
-                      : option.image === "girl"
-                      ? "bg-rose-100 text-rose-500"
-                      : "bg-amber-100 text-amber-600"
                   }`}
                 >
-                  <Smile size={36} />
+                  <img
+                    src={matchOptionSvg(option.text + " " + (option.translation || ""), idx)}
+                    alt={option.text}
+                    className="w-16 h-16 object-contain"
+                  />
                 </div>
 
-                <span className="font-black text-lg text-slate-800 leading-snug">
+                <span className="font-black text-lg text-[var(--text-main)] leading-snug">
                   {option.text}
                 </span>
 
                 {option.translation && (
-                  <span className="text-xs font-bold text-slate-400 mt-0.5">
+                  <span className="text-xs font-bold text-[var(--text-sub)] mt-0.5">
                     {option.translation}
                   </span>
                 )}

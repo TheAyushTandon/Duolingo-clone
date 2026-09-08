@@ -16,6 +16,24 @@
   --duo-gray-dark: #AFAFAF;
   --duo-text: #4B4B4B;
   --duo-subtext: #777777;
+  
+  /* Light Theme Variables */
+  --bg-main: #FFFFFF;
+  --bg-sidebar: #FFFFFF;
+  --border-color: #E5E5E5;
+  --text-main: #4B4B4B;
+  --text-sub: #777777;
+}
+
+.dark {
+  /* Dark Theme Variables */
+  --bg-main: #131F24;
+  --bg-sidebar: #131F24;
+  --border-color: #37464F;
+  --text-main: #FFFFFF;
+  --text-sub: #AFAFAF;
+  --duo-text: #FFFFFF;
+  --duo-gray: #37464F;
 }
 
 @font-face {
@@ -42,7 +60,7 @@
 }
 
 .sknt2 {
-  color: #4B4B4B !important;
+  color: var(--text-main) !important;
   font-family: var(--font-feather), 'DuolingoFeather', var(--font-nunito), sans-serif;
   font-size: 15px;
   font-weight: 700;
@@ -53,6 +71,9 @@
 
 .learn-anywhere-title {
   color: #042C60 !important;
+}
+.dark .learn-anywhere-title {
+  color: #FFFFFF !important;
 }
 
 h1, h2, h3, h4, h5, h6, .font-heading {
@@ -69,10 +90,11 @@ html, body {
 
 body {
   font-family: var(--font-nunito);
-  color: var(--duo-text);
-  background-color: #FFFFFF;
+  color: var(--text-main);
+  background-color: var(--bg-main);
   user-select: none;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 /* 3D Tactile Button Utility Classes */

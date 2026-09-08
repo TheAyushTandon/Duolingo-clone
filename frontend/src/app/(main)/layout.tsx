@@ -1,41 +1,25 @@
-import React from "react";
-import { LeftSidebar } from "@/components/layout/LeftSidebar";
-import { TopBar } from "@/components/layout/TopBar";
-import { MobileNav } from "@/components/layout/MobileNav";
-import { RightSidebar } from "@/components/layout/RightSidebar";
+"use client";
+
+import type { PropsWithChildren } from "react";
+
+import { MobileHeader } from "@/components/mobile-header";
+import { Sidebar } from "@/components/sidebar";
+import { MobileFooter } from "@/components/mobile-footer";
 import { DevModal } from "@/components/dev/DevModal";
+import { AuthGuard } from "@/components/auth/AuthGuard";
 
-export default function MainLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const MainLayout = ({ children }: PropsWithChildren) => {
   return (
-    <div className="min-h-screen bg-white text-slate-700 flex flex-col font-sans">
-      {/* Fixed Desktop Left Sidebar */}
-      <LeftSidebar />
-
-      {/* Main Content Area */}
-      <div className="lg:pl-64 flex flex-col min-h-screen">
-        {/* Sticky Gamification Header */}
-        <TopBar />
-
-        {/* Center Canvas + Right Sidebar layout */}
-        <div className="flex-1 flex justify-center w-full max-w-7xl mx-auto px-4 md:px-8">
-          <main className="flex-1 max-w-2xl w-full">
-            {children}
-          </main>
-
-          {/* Desktop Right Sidebar */}
-          <RightSidebar />
-        </div>
-
-        {/* Mobile Navigation Bar */}
-        <MobileNav />
-      </div>
-
-      {/* Dev Simulator Dialog */}
+    <AuthGuard>
+      <MobileHeader />
+      <Sidebar className="hidden lg:flex" />
+      <main className="h-full pt-[50px] lg:pl-[256px] lg:pt-0 pb-[80px] lg:pb-0">
+        <div className="mx-auto h-full max-w-[1056px] pt-6">{children}</div>
+      </main>
+      <MobileFooter />
       <DevModal />
-    </div>
+    </AuthGuard>
   );
-}
+};
+
+export default MainLayout;

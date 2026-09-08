@@ -112,10 +112,10 @@ export function FeedbackBar({
 
   // Idle state
   return (
-    <footer className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-slate-200 py-6 px-4 sm:px-8 z-40 select-none">
+    <footer className="fixed bottom-0 left-0 right-0 bg-[var(--bg-main)] border-t-2 border-[var(--border-color)] py-6 px-4 sm:px-8 z-40 select-none transition-colors duration-200">
       <div className="w-full max-w-4xl mx-auto flex items-center justify-between gap-4">
-        <div className="hidden sm:block text-xs font-bold text-slate-400">
-          Tip: Press <kbd className="px-2 py-1 rounded bg-slate-100 border border-slate-300 font-mono text-[10px]">Enter ↵</kbd> to submit
+        <div className="hidden sm:block text-xs font-bold text-[var(--text-sub)]">
+          Tip: Press <kbd className="px-2 py-1 rounded bg-[var(--border-color)]/30 border border-[var(--border-color)] font-mono text-[10px]">Enter ↵</kbd> to submit
         </div>
 
         <button
@@ -128,7 +128,7 @@ export function FeedbackBar({
           disabled={isCheckDisabled || isSubmitting}
           className={`w-full sm:w-auto px-10 py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider transition-all ${
             isCheckDisabled || isSubmitting
-              ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+              ? "bg-[var(--border-color)] text-[var(--text-sub)]/60 cursor-not-allowed shadow-none"
               : "bg-[#58cc02] text-white shadow-[0_4px_0_#46a302] hover:bg-[#46a302] active:translate-y-1 active:shadow-none"
           }`}
         >

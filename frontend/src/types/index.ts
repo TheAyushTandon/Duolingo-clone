@@ -2,6 +2,15 @@ export type ExerciseType = 'WORD_BANK' | 'MULTIPLE_CHOICE' | 'MATCH' | 'FILL_BLA
 export type SkillState = 'LOCKED' | 'AVAILABLE' | 'IN_PROGRESS' | 'COMPLETED';
 export type AttemptStatus = 'IN_PROGRESS' | 'COMPLETED' | 'FAILED' | 'ABANDONED';
 
+export interface CourseOut {
+  id: string;
+  title: string;
+  code: string;
+  description: string | null;
+  flag_icon: string | null;
+  speech_locale: string | null;
+}
+
 export interface SelectOption {
   id: string;
   text: string;
@@ -19,6 +28,8 @@ export interface PublicExerciseData {
   choices?: string[];
   prompt_sentence?: string;
   hint?: string;
+  pairs_map?: Record<string, string>;
+  is_speech_only?: boolean;
 }
 
 export interface PublicExercise {
@@ -56,8 +67,11 @@ export interface SkillPathNode {
   icon: string;
   total_levels: number;
   level: number;
-  progress_percentage: number;
+  progress_percentage?: number;
   state: SkillState;
+  next_lesson_id?: string | null;
+  total_lessons?: number;
+  completed_lessons?: number;
   lessons: LessonSummary[];
 }
 
@@ -76,19 +90,28 @@ export interface UserStatsSummary {
   hearts: number;
   max_hearts: number;
   streak: number;
+  streak_active_today?: boolean;
+  active_days?: string[];
+}
+
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+  user: UserProfileResponse;
 }
 
 export interface LearningPathResponse {
-  course: {
-    id: string;
-    title: string;
-    code: string;
-    description: string;
-    flag_icon: string;
-  };
+  course: CourseOut;
   user_stats: UserStatsSummary;
   units: UnitPathItem[];
 }
+
+// Course code -> flag asset used across the app.
+export const COURSE_FLAGS: Record<string, string> = {
+  fr: "/assets/flags/french.svg",
+  en: "/assets/flags/english.svg",
+  es: "/assets/flags/spanish.svg",
+};
 
 export interface AttemptCreateResponse {
   attempt_id: string;
@@ -96,6 +119,7 @@ export interface AttemptCreateResponse {
   status: AttemptStatus;
   current_exercise_index: number;
   started_at: string;
+  hearts_remaining: number;
 }
 
 export interface SubmittedExerciseHistory {

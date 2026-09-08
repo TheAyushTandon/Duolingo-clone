@@ -30,9 +30,9 @@ export function useSound() {
     }
   }, [soundEnabled]);
 
-  const speak = useCallback((text: string, lang = "es-ES") => {
+  const speak = useCallback((text: string, lang = "es-ES", rate = 0.9) => {
     if (!soundEnabled) return;
-    sounds.speak(text, lang);
+    sounds.speak(text, lang, rate);
   }, [soundEnabled]);
 
   const playClick = useCallback(() => play("click"), [play]);

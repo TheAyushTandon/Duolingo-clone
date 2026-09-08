@@ -1,204 +1,170 @@
 "use client";
 
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchAchievements, fetchLearningPath } from "@/lib/api";
-import { 
-  Target, 
-  Gift, 
-  Trophy, 
-  Flame, 
-  Brain, 
-  Book, 
-  Check, 
-  Zap, 
-  Sparkles 
-} from "lucide-react";
-import { useSound } from "@/hooks/useSound";
+import { FeedWrapper } from "@/components/feed-wrapper";
+import { StickyWrapper } from "@/components/sticky-wrapper";
+import { LiveUserProgress } from "@/components/live-user-progress";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Lock, Zap, Sparkles, Trophy } from "lucide-react";
 
-const ICON_MAP: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
-  flame: Flame,
-  brain: Brain,
-  book: Book,
-  trophy: Trophy,
-  default: Trophy,
-};
+import { useTodayActivity, useProfile } from "@/hooks/useUserData";
 
-export function QuestsPage() {
-  const { playClick, playFanfare } = useSound();
+const DAILY_XP_GOAL = 20;
 
-  const { data: pathData } = useQuery({
-    queryKey: ["learningPath"],
-    queryFn: fetchLearningPath,
-  });
+export default function QuestsPage() {
+  const { data: today } = useTodayActivity();
+  const { data: profile } = useProfile();
 
-  const { data: achievements, isLoading } = useQuery({
-    queryKey: ["achievements"],
-    queryFn: fetchAchievements,
-  });
-
-  const stats = pathData?.user_stats || { xp: 0, streak: 3 };
-
-  const dailyQuests = [
-    {
-      id: "q1",
-      title: "Earn 20 XP today",
-      progress: Math.min(20, (stats.xp % 50)),
-      total: 20,
-      reward: "10 Gems",
-      color: "bg-[#ffc800]",
-    },
-    {
-      id: "q2",
-      title: "Complete 1 lesson",
-      progress: 1,
-      total: 1,
-      reward: "Chest",
-      color: "bg-[#58cc02]",
-    },
-    {
-      id: "q3",
-      title: "Maintain 3-day streak",
-      progress: Math.min(3, stats.streak),
-      total: 3,
-      reward: "15 Gems",
-      color: "bg-[#ff9600]",
-    },
-  ];
+  const earned = today?.xp ?? 0;
+  const xpProgress = Math.min(100, Math.round((earned / DAILY_XP_GOAL) * 100));
+  const lessonsDone = today?.lessons ?? 0;
+  const lessonGoal = 2;
+  const lessonProgress = Math.min(100, Math.round((lessonsDone / lessonGoal) * 100));
 
   return (
-    <div className="w-full max-w-2xl mx-auto py-8 px-4 select-none pb-24 space-y-10">
-      {/* Daily Quests Section */}
-      <section>
-        <div className="flex items-center gap-2.5 mb-2">
-          <Target size={26} className="text-[#ff9600]" />
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight">
-            Daily Quests
-          </h1>
+    <div className="flex flex-row-reverse gap-[48px] px-6 font-din">
+      <StickyWrapper>
+        <LiveUserProgress />
+
+        {/* Monthly challenges unlock soon card */}
+        <div className="rounded-2xl border-2 border-[var(--border-color)] bg-[var(--bg-sidebar)] p-5 space-y-4 shadow-sm">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <h3 className="font-extrabold text-base text-[#58CC02] tracking-tight">
+                Monthly challenges unlock soon!
+              </h3>
+              <p className="text-xs font-bold text-[var(--text-sub)] leading-relaxed">
+                Complete each month&apos;s challenge to earn exclusive badges
+              </p>
+            </div>
+            <div className="relative shrink-0 flex items-center justify-center">
+              <Image
+                src="/monthly-challenges.svg"
+                alt="Monthly Challenges"
+                width={80}
+                height={57}
+                className="object-contain drop-shadow-sm"
+              />
+            </div>
+          </div>
+          <Link href="/learn">
+            <Button
+              variant="default"
+              className="w-full bg-[#1CB0F6] hover:bg-[#1899D6] text-white border-b-4 border-[#1482B6] active:translate-y-0.5 active:border-b-2 font-black uppercase tracking-wider text-xs py-5 rounded-2xl transition-all"
+            >
+              Start a lesson
+            </Button>
+          </Link>
         </div>
-        <p className="text-xs font-bold text-slate-400 mb-6">
-          Complete daily challenges to earn bonus gems and unlock mystery chests.
-        </p>
+      </StickyWrapper>
 
-        <div className="space-y-3">
-          {dailyQuests.map((quest) => {
-            const isFinished = quest.progress >= quest.total;
-            const pct = Math.min(100, (quest.progress / quest.total) * 100);
+      <FeedWrapper>
+        <div className="w-full flex flex-col gap-y-6">
+          {/* Welcome Banner */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#CE82FF] via-[#A855F7] to-[#7C3AED] p-6 text-white shadow-lg border-2 border-[#A855F7]/30">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-xs font-black uppercase tracking-wider">
+                <Sparkles size={14} className="text-amber-300" />
+                Daily Challenges
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
+                Welcome{profile ? `, ${profile.username.replace("_", " ")}` : ""}!
+              </h2>
+              <p className="text-sm font-bold text-purple-100">
+                Complete daily quests to earn bonus XP and keep Duo satisfied!
+              </p>
+            </div>
+          </div>
 
-            return (
-              <div
-                key={quest.id}
-                className="p-5 rounded-3xl border-2 border-slate-200 bg-white flex items-center justify-between gap-4"
-              >
-                <div className="flex-1 space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-extrabold text-sm text-slate-800">
-                      {quest.title}
-                    </span>
-                    <span className="text-xs font-black text-slate-400">
-                      {quest.progress} / {quest.total}
-                    </span>
-                  </div>
+          {/* Daily Quests Header */}
+          <div className="flex items-center justify-between pt-2">
+            <h1 className="text-2xl font-black text-[var(--text-main)]">
+              Daily Quests
+            </h1>
+            <div className="flex items-center gap-1.5 text-xs font-black text-[#FF9600] bg-[#FF9600]/10 px-3 py-1 rounded-xl border border-[#FF9600]/20">
+              <span>⏱ RESETS AT MIDNIGHT</span>
+            </div>
+          </div>
 
-                  {/* Progress Bar */}
-                  <div className="w-full h-3.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full ${quest.color} rounded-full transition-all duration-500`}
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
+          {/* Daily Quest: Earn XP */}
+          <div className="rounded-2xl border-2 border-b-4 border-[var(--border-color)] bg-[var(--bg-sidebar)] p-5 transition-transform hover:scale-[1.01]">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#FFC800]/15 border-2 border-[#FFC800]/30 flex items-center justify-center shrink-0">
+                <Zap className="w-7 h-7 text-[#FFC800] fill-[#FFC800]" />
+              </div>
+              <div className="flex-1 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="font-black text-base text-[var(--text-main)]">
+                    Earn {DAILY_XP_GOAL} XP
+                  </span>
+                  <span className="font-extrabold text-xs text-[var(--text-sub)]">
+                    {Math.min(earned, DAILY_XP_GOAL)} / {DAILY_XP_GOAL} XP
+                  </span>
                 </div>
-
-                {/* Reward Indicator */}
-                <div className="shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl bg-amber-50 border-2 border-amber-200 text-amber-500">
-                  {isFinished ? (
-                    <Check size={24} className="text-[#58cc02]" strokeWidth={3} />
-                  ) : (
-                    <Gift size={22} />
-                  )}
+                <div className="relative h-5 w-full rounded-full bg-[var(--border-color)] overflow-hidden">
+                  <div
+                    className="h-full bg-[#FFC800] rounded-full transition-all duration-500 relative"
+                    style={{ width: `${Math.max(5, xpProgress)}%` }}
+                  >
+                    <div className="absolute top-0.5 left-2 right-2 h-1 bg-white/30 rounded-full" />
+                  </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Lifetime Achievements Section */}
-      <section>
-        <div className="flex items-center gap-2.5 mb-2">
-          <Trophy size={26} className="text-[#ffc800]" />
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight">
-            Achievements
-          </h2>
-        </div>
-        <p className="text-xs font-bold text-slate-400 mb-6">
-          Level up your language profile with badges and XP rewards.
-        </p>
-
-        {isLoading ? (
-          <div className="space-y-3 animate-pulse">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-20 bg-slate-100 rounded-3xl" />
-            ))}
+              <div className="shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl bg-[#FFC800]/10 border-2 border-[#FFC800]/30 shadow-sm">
+                <Image src="/quests.svg" alt="Chest" width={32} height={32} />
+              </div>
+            </div>
           </div>
-        ) : (
-          <div className="space-y-3">
-            {achievements?.map((ach) => {
-              const Icon = ICON_MAP[ach.icon] || ICON_MAP.default;
 
-              return (
-                <div
-                  key={ach.id}
-                  className={`p-5 rounded-3xl border-2 transition-all flex items-center justify-between gap-4 ${
-                    ach.is_unlocked
-                      ? "bg-white border-slate-200"
-                      : "bg-slate-50 border-slate-200 opacity-75"
-                  }`}
-                >
-                  <div className="flex items-center gap-4">
-                    {/* Badge Icon */}
-                    <div
-                      className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 border-2 ${
-                        ach.is_unlocked
-                          ? "bg-amber-100 border-amber-300 text-amber-500"
-                          : "bg-slate-200 border-slate-300 text-slate-400"
-                      }`}
-                    >
-                      <Icon size={28} />
-                    </div>
-
-                    <div>
-                      <h4 className="font-black text-base text-slate-800">
-                        {ach.name}
-                      </h4>
-                      <p className="text-xs font-semibold text-slate-500">
-                        {ach.description}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Reward / Status */}
-                  <div className="shrink-0 text-right">
-                    {ach.is_unlocked ? (
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-100 text-emerald-700 font-black text-xs uppercase tracking-wider">
-                        <Check size={14} strokeWidth={3} />
-                        <span>UNLOCKED</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1 text-slate-400 font-black text-xs">
-                        <Zap size={14} className="text-[#ffc800] fill-[#ffc800]" />
-                        <span>+{ach.xp_reward} XP</span>
-                      </div>
-                    )}
+          {/* Daily Quest: Complete lessons */}
+          <div className="rounded-2xl border-2 border-b-4 border-[var(--border-color)] bg-[var(--bg-sidebar)] p-5 transition-transform hover:scale-[1.01]">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#58CC02]/15 border-2 border-[#58CC02]/30 flex items-center justify-center shrink-0">
+                <Image src="/finish.svg" alt="Lessons" width={28} height={28} />
+              </div>
+              <div className="flex-1 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="font-black text-base text-[var(--text-main)]">
+                    Complete {lessonGoal} lessons
+                  </span>
+                  <span className="font-extrabold text-xs text-[var(--text-sub)]">
+                    {Math.min(lessonsDone, lessonGoal)} / {lessonGoal}
+                  </span>
+                </div>
+                <div className="relative h-5 w-full rounded-full bg-[var(--border-color)] overflow-hidden">
+                  <div
+                    className="h-full bg-[#58CC02] rounded-full transition-all duration-500 relative"
+                    style={{ width: `${Math.max(5, lessonProgress)}%` }}
+                  >
+                    <div className="absolute top-0.5 left-2 right-2 h-1 bg-white/30 rounded-full" />
                   </div>
                 </div>
-              );
-            })}
+              </div>
+              <div className="shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl bg-[#58CC02]/10 border-2 border-[#58CC02]/30 shadow-sm">
+                <Image src="/quests.svg" alt="Chest" width={32} height={32} />
+              </div>
+            </div>
           </div>
-        )}
-      </section>
+
+          {/* Locked Quest item */}
+          <div className="rounded-2xl border-2 border-[var(--border-color)] bg-[var(--bg-sidebar)] p-5 opacity-70">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[var(--border-color)]/60 flex items-center justify-center text-[var(--text-sub)] shrink-0">
+                <Lock className="w-6 h-6" />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-black text-base text-[var(--text-main)]">
+                  More quests unlock tomorrow
+                </h4>
+                <p className="font-bold text-xs text-[var(--text-sub)]">
+                  Keep expanding your streak to unlock special weekend challenges
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </FeedWrapper>
     </div>
   );
 }
-
-export default QuestsPage;

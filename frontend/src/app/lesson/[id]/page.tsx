@@ -27,7 +27,9 @@ import { MatchPairsExercise } from "@/components/lesson/exercises/MatchPairsExer
 import { FillBlankExercise } from "@/components/lesson/exercises/FillBlankExercise";
 import { TypeAnswerExercise } from "@/components/lesson/exercises/TypeAnswerExercise";
 import { useSound } from "@/hooks/useSound";
-import { AlertCircle, RefreshCw } from "lucide-react";
+import { useLearningPath } from "@/hooks/useUserData";
+import { AlertCircle } from "lucide-react";
+import { AuthGuard } from "@/components/auth/AuthGuard";
 
 export default function LessonPlayerPage() {
   const params = useParams();
@@ -37,14 +39,25 @@ export default function LessonPlayerPage() {
 
   const { playCorrect, playIncorrect, playHeartLost } = useSound();
 
+  // Course narration locale for native-tongue speech.
+  const { data: pathData } = useLearningPath();
+  const speechLocale = pathData?.course.speech_locale || "es-ES";
+
   // Attempt session state
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [hearts, setHearts] = useState(5);
+  const [hearts, setHearts] = useState(pathData?.user_stats?.hearts ?? 5);
   const [heartLostTrigger, setHeartLostTrigger] = useState(false);
   const [isQuitOpen, setIsQuitOpen] = useState(false);
   const [isOutOfHeartsOpen, setIsOutOfHeartsOpen] = useState(false);
   const [mistakesCount, setMistakesCount] = useState(0);
+
+  // Synchronize hearts immediately whenever learning-path data updates
+  useEffect(() => {
+    if (pathData?.user_stats?.hearts !== undefined) {
+      setHearts(pathData.user_stats.hearts);
+    }
+  }, [pathData?.user_stats?.hearts]);
 
   // Feedback bar state
   const [feedbackStatus, setFeedbackStatus] = useState<"idle" | "correct" | "incorrect">("idle");
@@ -77,7 +90,13 @@ export default function LessonPlayerPage() {
         const res = await startLessonAttempt(lessonId);
         if (isMounted) {
           setAttemptId(res.attempt_id);
-          setCurrentIndex(res.current_exercise_index || 0);
+          // Backend index is the 1-based order of the next exercise
+          // (0 = nothing answered yet); the exercises array is 0-based.
+          const nextOrder = res.current_exercise_index || 0;
+          setCurrentIndex(Math.max(0, nextOrder - 1));
+          if (typeof res.hearts_remaining === "number") {
+            setHearts(res.hearts_remaining);
+          }
         }
       } catch (err) {
         console.error("Failed to start attempt:", err);
@@ -126,23 +145,26 @@ export default function LessonPlayerPage() {
     }
   };
 
-  // Build the submission payload based on exercise type
+  // Build the submission payload based on exercise type.
+  // Backend contract: MC/FILL -> {selected_option}, WORD_BANK ->
+  // {selected_words}, MATCH -> {pairs}, TYPE -> {answer}.
   const getSubmissionPayload = () => {
     if (!currentExercise) return null;
 
     switch (currentExercise.type) {
       case "MULTIPLE_CHOICE":
-        return mcSelected;
+        return mcSelected === null ? null : { selected_option: mcSelected };
       case "WORD_BANK": {
         const wordBank = currentExercise.exercise_data.word_bank || [];
-        return wbIndices.map((idx) => wordBank[idx]);
+        const selectedWords = wbIndices.map((idx) => wordBank[idx]);
+        return selectedWords.length ? { selected_words: selectedWords } : null;
       }
       case "MATCH":
-        return matchPairs;
+        return matchPairs.length ? { pairs: matchPairs } : null;
       case "FILL_BLANK":
-        return fillChoice;
+        return fillChoice === null ? null : { selected_option: fillChoice };
       case "TYPE_ANSWER":
-        return typeValue.trim();
+        return typeValue.trim() ? { answer: typeValue.trim() } : null;
       default:
         return null;
     }
@@ -201,6 +223,8 @@ export default function LessonPlayerPage() {
         queryClient.invalidateQueries({ queryKey: ["learningPath"] });
         queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
         queryClient.invalidateQueries({ queryKey: ["profile"] });
+        queryClient.invalidateQueries({ queryKey: ["activity"] });
+        queryClient.invalidateQueries({ queryKey: ["achievements"] });
         setCompletionData(comp);
       } catch (err) {
         console.error("Lesson completion error:", err);
@@ -260,8 +284,9 @@ export default function LessonPlayerPage() {
     : 100;
 
   return (
-    <div className="min-h-screen bg-white flex flex-col justify-between font-sans">
-      {/* Lesson Header */}
+    <AuthGuard>
+      <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] flex flex-col justify-between font-sans transition-colors duration-200">
+        {/* Lesson Header */}
       <LessonHeader
         currentIndex={currentIndex}
         totalExercises={totalExercises}
@@ -281,6 +306,7 @@ export default function LessonPlayerPage() {
                 selectedOptionId={mcSelected}
                 onSelect={setMcSelected}
                 disabled={feedbackStatus !== "idle"}
+                locale={speechLocale}
               />
             )}
 
@@ -298,6 +324,8 @@ export default function LessonPlayerPage() {
                   );
                 }}
                 disabled={feedbackStatus !== "idle"}
+                locale={speechLocale}
+                isSpeechOnly={Boolean(currentExercise.exercise_data.is_speech_only)}
               />
             )}
 
@@ -309,6 +337,8 @@ export default function LessonPlayerPage() {
                 matchedPairs={matchPairs}
                 onMatchPairsChange={setMatchPairs}
                 disabled={feedbackStatus !== "idle"}
+                locale={speechLocale}
+                pairsMap={currentExercise.exercise_data.pairs_map}
               />
             )}
 
@@ -320,6 +350,7 @@ export default function LessonPlayerPage() {
                 selectedChoice={fillChoice}
                 onSelectChoice={setFillChoice}
                 disabled={feedbackStatus !== "idle"}
+                locale={speechLocale}
               />
             )}
 
@@ -331,6 +362,10 @@ export default function LessonPlayerPage() {
                 value={typeValue}
                 onChange={setTypeValue}
                 disabled={feedbackStatus !== "idle"}
+                languageCode={pathData?.course.code || "fr"}
+                languageName={pathData?.course.title || "French"}
+                isSpeechOnly={Boolean(currentExercise.exercise_data.is_speech_only)}
+                locale={speechLocale}
               />
             )}
           </div>
@@ -359,16 +394,21 @@ export default function LessonPlayerPage() {
         onRefillSuccess={(newHearts) => {
           setHearts(newHearts);
           setIsOutOfHeartsOpen(false);
+          // The attempt is FAILED server-side once hearts hit zero —
+          // refilling starts a fresh run from the learning path.
+          queryClient.invalidateQueries({ queryKey: ["learningPath"] });
+          router.push("/learn");
         }}
         onQuit={() => router.push("/learn")}
       />
 
-      {completionData && (
-        <LessonCompleteModal
-          data={completionData}
-          accuracy={accuracy}
-        />
-      )}
-    </div>
+        {completionData && (
+          <LessonCompleteModal
+            data={completionData}
+            accuracy={accuracy}
+          />
+        )}
+      </div>
+    </AuthGuard>
   );
 }

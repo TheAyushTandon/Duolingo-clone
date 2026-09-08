@@ -1,0 +1,38 @@
+[project]
+name = "duolingo-clone-backend"
+version = "1.1.0"
+description = "Backend for a Duolingo-inspired language learning platform"
+requires-python = ">=3.12"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+# Generated migrations are excluded from style linting.
+extend-exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+# B008: FastAPI's `Depends(...)` in argument defaults is the framework's
+# canonical dependency-injection pattern.
+ignore = ["B008"]
+
+[tool.ruff.lint.per-file-ignores]
+# conftest sets DATABASE_URL before importing app modules on purpose.
+"tests/conftest.py" = ["E402"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["app/seed/*", "app/main.py"]
+
+[tool.mypy]
+python_version = "3.12"
+warn_unused_ignores = false
+check_untyped_defs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+exclude = ["alembic/versions", "tests/"]

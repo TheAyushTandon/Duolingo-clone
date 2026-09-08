@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { usePreferencesStore } from "@/stores/usePreferencesStore";
 import { useSound } from "@/hooks/useSound";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface NavItem {
   label: string;
@@ -85,23 +86,22 @@ export function LeftSidebar() {
 
       {/* Bottom Utility Controls */}
       <div className="pt-4 border-t-2 border-slate-100 space-y-2">
-        {/* Sound Toggle */}
-        <button
-          onClick={() => {
-            toggleSound();
-            playClick();
-          }}
-          className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl font-extrabold text-xs text-slate-500 hover:bg-slate-100 transition-colors"
-          title={soundEnabled ? "Mute audio effects" : "Unmute audio effects"}
-        >
-          <span className="flex items-center gap-2">
+        <div className="flex items-center justify-between px-2">
+          <ThemeToggle />
+          <button
+            onClick={() => {
+              toggleSound();
+              playClick();
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-extrabold text-xs text-slate-500 hover:bg-slate-100 transition-colors"
+            title={soundEnabled ? "Mute audio effects" : "Unmute audio effects"}
+          >
             {soundEnabled ? <Volume2 size={18} className="text-[#58cc02]" /> : <VolumeX size={18} className="text-slate-400" />}
-            <span>SOUND EFFECTS</span>
-          </span>
-          <span className={`text-[10px] uppercase px-2 py-0.5 rounded font-black ${soundEnabled ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'}`}>
-            {soundEnabled ? "ON" : "OFF"}
-          </span>
-        </button>
+            <span className={`text-[10px] uppercase px-1.5 py-0.5 rounded font-black ${soundEnabled ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'}`}>
+              {soundEnabled ? "ON" : "OFF"}
+            </span>
+          </button>
+        </div>
 
         {/* Developer Sandbox Drawer Trigger */}
         <button

@@ -3,6 +3,7 @@
 import React from "react";
 import { X, Heart } from "lucide-react";
 import { useSound } from "@/hooks/useSound";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface LessonHeaderProps {
   currentIndex: number;
@@ -33,14 +34,14 @@ export function LessonHeader({
           playClick();
           onQuitClick();
         }}
-        className="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100 transition-colors"
+        className="text-[var(--text-sub)] hover:text-[var(--text-main)] p-1.5 rounded-xl hover:bg-[var(--border-color)]/30 transition-colors"
         aria-label="Quit lesson"
       >
         <X size={26} strokeWidth={2.8} />
       </button>
 
       {/* Fluid Progress Bar */}
-      <div className="flex-1 h-4 bg-slate-200 rounded-full overflow-hidden p-0.5 relative">
+      <div className="flex-1 h-4 bg-[var(--border-color)] rounded-full overflow-hidden p-0.5 relative">
         <div
           className="h-full bg-[#58cc02] rounded-full transition-all duration-500 ease-out relative"
           style={{ width: `${progressPercent}%` }}
@@ -50,14 +51,17 @@ export function LessonHeader({
         </div>
       </div>
 
-      {/* Hearts Counter */}
-      <div
-        className={`flex items-center gap-1.5 font-black text-base text-[#ff4b4b] transition-transform duration-300 ${
-          heartLostTrigger ? "animate-bounce scale-125" : ""
-        }`}
-      >
-        <Heart size={26} className="fill-[#ff4b4b]" />
-        <span>{hearts}</span>
+      {/* Theme Toggle & Hearts Counter */}
+      <div className="flex items-center gap-3">
+        <ThemeToggle />
+        <div
+          className={`flex items-center gap-1.5 font-black text-base text-[#ff4b4b] transition-transform duration-300 ${
+            heartLostTrigger ? "animate-bounce scale-125" : ""
+          }`}
+        >
+          <Heart size={26} className="fill-[#ff4b4b]" />
+          <span>{hearts}</span>
+        </div>
       </div>
     </header>
   );

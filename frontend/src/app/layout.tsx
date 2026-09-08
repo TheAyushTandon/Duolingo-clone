@@ -3,6 +3,7 @@ import { Nunito } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import QueryProvider from "@/components/providers/QueryProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -33,11 +34,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${nunito.variable} ${featherBold.variable} ${dinNextBold.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-white text-[#4b4b4b] selection:bg-[#d7ffb8]">
-        <QueryProvider>
-          {children}
-        </QueryProvider>
+    <html lang="en" className={`${nunito.variable} ${featherBold.variable} ${dinNextBold.variable} h-full antialiased scroll-smooth`}>
+      <body className="min-h-full flex flex-col selection:bg-[#d7ffb8]">
+        <ThemeProvider>
+          <QueryProvider>
+            {children}
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

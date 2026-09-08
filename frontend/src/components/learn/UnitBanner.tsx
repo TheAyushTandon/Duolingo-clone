@@ -31,13 +31,13 @@ export function UnitBanner({
 
         <div className="relative z-10 flex items-start justify-between">
           <div className="space-y-1 max-w-[70%]">
-            <span className="font-black text-xs uppercase tracking-widest text-white/80 block">
+            <span className="font-black text-xs uppercase tracking-widest text-white/85 block">
               SECTION 1, UNIT {unitIndex + 1}
             </span>
-            <h2 className="text-xl sm:text-2xl font-black leading-tight tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-black leading-tight tracking-tight !text-white font-din drop-shadow-sm">
               {title}
             </h2>
-            <p className="text-xs sm:text-sm font-bold text-white/90">
+            <p className="text-xs sm:text-sm font-bold text-white/95">
               {description}
             </p>
           </div>

@@ -147,13 +147,13 @@ class SoundManager {
     }
   }
 
-  speak(text: string, lang = "es-ES") {
+  speak(text: string, lang = "es-ES", rate = 0.9) {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
     try {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = lang;
-      utterance.rate = 0.9; // Slightly slower for language learners
+      utterance.rate = rate; // Configurable speech rate (0.9 normal, 0.6 slow turtle)
       window.speechSynthesis.speak(utterance);
     } catch {
       // Ignore TTS error

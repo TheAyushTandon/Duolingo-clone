@@ -70,7 +70,7 @@ export function LanguageRibbon() {
   };
 
   return (
-    <div className="w-full border-t border-[#E5E5E5] bg-white py-4 select-none relative">
+    <div className="hidden md:block w-full border-t border-[#E5E5E5] bg-white py-4 select-none relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center gap-3">
         {/* Left Arrow */}
         <button
