@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: duolingo-clone-backend
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt && python -m alembic upgrade head && python -m app.seed.seed_database
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: ENVIRONMENT
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false
+      - key: ENABLE_DEV_TOOLS
+        value: "false"
+      - key: RATE_LIMIT_ENABLED
+        value: "true"
+      - key: DATABASE_URL
+        value: sqlite:///./data/duolingo_clone.db

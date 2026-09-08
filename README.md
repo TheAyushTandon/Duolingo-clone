@@ -476,29 +476,74 @@ A click-path that exercises every core feature:
 
 ## <a id="deployment"></a>☁️ Deployment
 
-The backend ships with a production Dockerfile (non-root user, health check, migrate + seed entrypoint):
+### 🟣 Deploy Backend to Render
+
+You can deploy the FastAPI backend to [Render](https://render.com) using either **1-Click Blueprint** or **Manual Web Service**:
+
+#### Option A · 1-Click Blueprint (Recommended)
+This repository includes a [`render.yaml`](file:///d:/PROJECTS/Duolingo's%20Clone/render.yaml) blueprint:
+1. Log in to [dashboard.render.com](https://dashboard.render.com)
+2. Click **New +** → **Blueprint**
+3. Select your `Duolingo-clone` repository
+4. Set your `CORS_ORIGINS` to your frontend URL (e.g. `https://your-frontend.vercel.app`)
+5. Click **Apply** — Render builds, migrates, seeds, and serves automatically.
+
+#### Option B · Manual Web Service on Render
+1. Click **New +** → **Web Service** and connect your GitHub repository.
+2. Configure service settings:
+   - **Name**: `duolingo-clone-api`
+   - **Root Directory**: `backend`
+   - **Runtime**: `Python 3` (or `Docker`)
+   - **Build Command**:
+     ```bash
+     pip install -r requirements.txt && python -m alembic upgrade head && python -m app.seed.seed_database
+     ```
+   - **Start Command**:
+     ```bash
+     uvicorn app.main:app --host 0.0.0.0 --port $PORT
+     ```
+   - **Health Check Path**: `/api/health`
+3. Add **Environment Variables**:
+   | Key | Value | Description |
+   |---|---|---|
+   | `PYTHON_VERSION` | `3.12.0` | Python runtime version |
+   | `ENVIRONMENT` | `production` | Enables strict security & disables debug |
+   | `SECRET_KEY` | *(Generate a 32+ char secret)* | Bearer token HMAC signing key |
+   | `CORS_ORIGINS` | `https://<your-frontend>.vercel.app` | Allowed frontend origins (comma-separated) |
+   | `ENABLE_DEV_TOOLS` | `false` | Disables sandbox endpoints in production |
+   | `RATE_LIMIT_ENABLED` | `true` | Enforces slowapi IP rate limits |
+   | `DATABASE_URL` | `sqlite:///./data/duolingo_clone.db` | Default SQLite path (or PostgreSQL URL) |
+4. **Persistence on Render**:
+   - **SQLite with Persistent Disk**: Under **Disks**, attach a 1 GB disk mounted at `/opt/render/project/src/backend/data` so user progress and streaks persist across deploys.
+   - *(Optional)* **PostgreSQL**: Create a free Render PostgreSQL database and paste the Internal Database URL into `DATABASE_URL`. The schema will auto-migrate on start!
+
+---
+
+### ▲ Deploy Frontend to Vercel
+
+1. Import your GitHub repository into [Vercel](https://vercel.com).
+2. Set **Root Directory** to `frontend`.
+3. Framework Preset: **Next.js** (auto-detected).
+4. Add Environment Variable:
+   ```env
+   NEXT_PUBLIC_API_URL=https://<your-backend-name>.onrender.com/api
+   ```
+5. Click **Deploy**.
+
+---
+
+### 🐳 Self-Hosted / Docker Orchestration
+
+The backend includes a multi-stage production Dockerfile:
 
 ```bash
-# Backend (Render / Railway / Fly — all work with the included Dockerfile)
+# Build and run backend container locally
 docker build -t language-learning-api ./backend
 docker run -p 8000:8000 language-learning-api
-# or, for local orchestration:
+
+# Or spin up with docker compose:
 docker compose -f backend/docker-compose.yml up
 ```
-
-**Production environment variables:**
-
-```env
-ENVIRONMENT=production
-SECRET_KEY=<random 32+ char secret>
-CORS_ORIGINS=https://your-frontend.vercel.app
-ENABLE_DEV_TOOLS=false
-RATE_LIMIT_ENABLED=true
-```
-
-**Frontend** (Vercel): set the project root to `frontend/` and `NEXT_PUBLIC_API_URL=https://<backend-host>/api`.
-
-> SQLite needs a persistent volume on your host (Railway volume / Render disk). The schema and code are PostgreSQL-portable — only `DATABASE_URL` changes.
 
 ---
 
