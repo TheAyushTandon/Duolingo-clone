@@ -26,24 +26,33 @@ export default function CreatorBadge() {
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
               className="absolute bottom-full right-0 mb-3 w-64 bg-white border-2 border-[#E5E5E5] rounded-2xl p-4 shadow-[0_6px_0_#E5E5E5] text-left"
             >
-              <div className="flex items-center gap-2.5 mb-2">
-                {/* Mini Duo Owl Avatar */}
-                <div className="w-7 h-7 rounded-xl bg-[#58CC02] flex items-center justify-center shadow-[0_2px_0_#46A302]">
-                  <span className="text-sm">🦉</span>
-                </div>
-                <div>
-                  <h4 className="font-feather text-sm font-black text-[#4B4B4B] leading-none">
-                    Ayush
-                  </h4>
-                  <p className="text-[10px] font-bold text-[#58CC02] uppercase tracking-wider">
-                    Creator & Developer
-                  </p>
-                </div>
+              <div className="mb-2">
+                <h4 className="font-feather text-base font-black text-[#4B4B4B] leading-none mb-1">
+                  Ayush Tandon
+                </h4>
+                <p className="text-[10px] font-bold text-[#58CC02] uppercase tracking-wider">
+                  Creator & Developer
+                </p>
               </div>
 
               <p className="text-xs text-[#777777] font-medium leading-relaxed mb-3">
-                Crafted this pixel-perfect Duolingo Clone featuring real Lottie scrub animations, WebM video pipelines, and reactive state.
+                Created by Ayush Tandon.
               </p>
+
+              <div className="p-2.5 bg-[#F7F7F7] rounded-xl border border-[#E5E5E5] text-xs mb-3">
+                <span className="text-[#AFAFAF] font-bold block text-[10px] uppercase tracking-wider mb-0.5">
+                  Portfolio Website
+                </span>
+                <a
+                  href="https://theayushtandon.in"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#1CB0F6] hover:text-[#1899D6] hover:underline font-bold inline-flex items-center gap-1"
+                >
+                  TheAyushTandon.in
+                  <span className="text-[10px]">↗</span>
+                </a>
+              </div>
 
               <div className="flex items-center justify-between pt-2 border-t border-[#F0F0F0] text-[10px] font-bold text-[#AFAFAF]">
                 <span>Duolingo Web Clone</span>
@@ -61,9 +70,9 @@ export default function CreatorBadge() {
           onClick={handleToggle}
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
-          className="group flex items-center gap-3 bg-white/95 backdrop-blur-md px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-2xl border-2 border-[#E5E5E5] hover:border-[#58CC02] shadow-[0_4px_0_#E5E5E5] hover:shadow-[0_4px_0_#58CC02] active:translate-y-1 active:shadow-none transition-all duration-150 cursor-pointer"
-          title="Duolingo Clone by Ayush"
-          aria-label="Creator: Ayush"
+          className="group flex items-center gap-2.5 bg-white/95 backdrop-blur-md px-4 py-2 sm:py-2.5 rounded-2xl border-2 border-[#E5E5E5] hover:border-[#58CC02] shadow-[0_4px_0_#E5E5E5] hover:shadow-[0_4px_0_#58CC02] active:translate-y-1 active:shadow-none transition-all duration-150 cursor-pointer"
+          title="Duolingo Clone created by Ayush Tandon"
+          aria-label="Creator: Ayush Tandon"
         >
           {/* Status Dot with Duo Green Ping */}
           <div className="relative flex items-center justify-center">
@@ -79,13 +88,8 @@ export default function CreatorBadge() {
               Crafted By
             </span>
             <span className="text-[14px] sm:text-[15px] font-feather font-black text-[#4B4B4B] group-hover:text-[#111111] transition-colors mt-0.5">
-              Ayush
+              Ayush Tandon
             </span>
-          </div>
-
-          {/* Mini Duo Feather / Sparkle Icon */}
-          <div className="w-5 h-5 rounded-lg bg-[#F7F7F7] group-hover:bg-[#E8F8D8] flex items-center justify-center transition-colors">
-            <span className="text-xs group-hover:scale-110 transition-transform">✨</span>
           </div>
         </motion.button>
       </div>
