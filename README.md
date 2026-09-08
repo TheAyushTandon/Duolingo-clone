@@ -282,16 +282,17 @@ erDiagram
     }
     xp_transactions {
         string id PK
+        string user_id FK
+        int amount
         string reason
         string reference_type
         string reference_id
     }
-    xp_transactions {
-        note "UNIQUE(user, reason, ref_type, ref_id) — duplicate-reward guard"
-    }
 ```
 
 **Data-secrecy rule**: `exercises.exercise_data` (prompts, word banks, options) is safe for clients; `exercises.validation_data` (correct answers) **never crosses the API boundary** — enforced by separate Pydantic schemas and a single conversion choke point, with leak tests guarding it.
+
+**Duplicate-reward guard**: `xp_transactions` enforces a composite `UNIQUE(user_id, reason, reference_type, reference_id)` constraint at the database layer, making duplicate rewards physically impossible.
 
 ---
 
