@@ -54,9 +54,7 @@ class TestRegeneration:
     def test_capped_at_max(self, db) -> None:
         now = dt.datetime.now(dt.UTC)
         user = _make_user(hearts=1, updated_at=now)
-        HeartService(db).regenerate_hearts(
-            user, now=now + dt.timedelta(hours=10)
-        )
+        HeartService(db).regenerate_hearts(user, now=now + dt.timedelta(hours=10))
         assert user.hearts == user.max_hearts
 
     def test_partial_progress_preserved(self, db) -> None:

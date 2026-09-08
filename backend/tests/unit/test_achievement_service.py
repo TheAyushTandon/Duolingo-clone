@@ -60,9 +60,7 @@ class TestAchievementUnlock:
         db.flush()
         assert len(unlocked) == 1  # First Steps
 
-        rows = list(
-            db.scalars(select(UserAchievement).where(UserAchievement.user_id == user.id))
-        )
+        rows = list(db.scalars(select(UserAchievement).where(UserAchievement.user_id == user.id)))
         assert len(rows) == 1
 
     def test_no_qualifying_achievements(self, db) -> None:

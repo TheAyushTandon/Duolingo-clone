@@ -13,9 +13,7 @@ from tests.helpers import (
 class TestResume:
     def test_reconstruction_data_after_answers(self, client, db, demo_headers) -> None:
         lesson = get_lesson_by_title(db, "At the table")
-        start = client.post(
-            f"/api/v1/lessons/{lesson.id}/attempts", headers=demo_headers
-        ).json()
+        start = client.post(f"/api/v1/lessons/{lesson.id}/attempts", headers=demo_headers).json()
         attempt_id = start["attempt_id"]
 
         exercises = get_lesson_exercises(db, lesson)
@@ -28,9 +26,7 @@ class TestResume:
                 headers=demo_headers,
             )
 
-        detail = client.get(
-            f"/api/v1/lesson-attempts/{attempt_id}", headers=demo_headers
-        )
+        detail = client.get(f"/api/v1/lesson-attempts/{attempt_id}", headers=demo_headers)
         assert detail.status_code == 200
         body = detail.json()
 
@@ -89,9 +85,7 @@ class TestAbandon:
         assert abandoned.json()["status"] == "ABANDONED"
 
         # GET still returns state, but a NEW start is required to continue.
-        detail = client.get(
-            f"/api/v1/lesson-attempts/{attempt_id}", headers=demo_headers
-        )
+        detail = client.get(f"/api/v1/lesson-attempts/{attempt_id}", headers=demo_headers)
         assert detail.status_code == 200
         assert detail.json()["status"] == "ABANDONED"
 
@@ -111,8 +105,6 @@ class TestAbandon:
         assert completion.status_code == 409
 
         # A new attempt can be started for the same lesson.
-        new_start = client.post(
-            f"/api/v1/lessons/{lesson.id}/attempts", headers=demo_headers
-        )
+        new_start = client.post(f"/api/v1/lessons/{lesson.id}/attempts", headers=demo_headers)
         assert new_start.status_code == 201
         assert new_start.json()["attempt_id"] != attempt_id

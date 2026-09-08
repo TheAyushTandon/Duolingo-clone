@@ -25,15 +25,11 @@ class TestDuplicateCompletion:
                 headers=demo_headers,
             )
 
-        first = client.post(
-            f"/api/v1/lesson-attempts/{attempt_id}/complete", headers=demo_headers
-        )
+        first = client.post(f"/api/v1/lesson-attempts/{attempt_id}/complete", headers=demo_headers)
         assert first.status_code == 200
         xp_after_first = user.xp
 
-        second = client.post(
-            f"/api/v1/lesson-attempts/{attempt_id}/complete", headers=demo_headers
-        )
+        second = client.post(f"/api/v1/lesson-attempts/{attempt_id}/complete", headers=demo_headers)
         assert second.status_code == 200
 
         # Identical result payloads.
@@ -42,9 +38,7 @@ class TestDuplicateCompletion:
 
         # Exactly one XP transaction for this attempt.
         transactions = list(
-            db.scalars(
-                select(XPTransaction).where(XPTransaction.reference_id == attempt_id)
-            )
+            db.scalars(select(XPTransaction).where(XPTransaction.reference_id == attempt_id))
         )
         assert len(transactions) == 1
         assert user.xp == xp_after_first
@@ -62,9 +56,7 @@ class TestDuplicateCompletion:
                 json={"submitted_answer": correct_answer_for(exercise)},
                 headers=demo_headers,
             )
-        client.post(
-            f"/api/v1/lesson-attempts/{attempt_id}/complete", headers=demo_headers
-        )
+        client.post(f"/api/v1/lesson-attempts/{attempt_id}/complete", headers=demo_headers)
 
         response = client.post(
             f"/api/v1/lesson-attempts/{attempt_id}/exercises/{exercises[0].id}/submit",

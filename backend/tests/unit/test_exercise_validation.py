@@ -72,24 +72,30 @@ class TestMultipleChoice:
 
 class TestWordBank:
     def test_correct_order(self) -> None:
-        assert ExerciseValidationService().validate(
-            WB, {"selected_words": ["yo", "como", "pan"]}
-        ).is_correct
+        assert (
+            ExerciseValidationService()
+            .validate(WB, {"selected_words": ["yo", "como", "pan"]})
+            .is_correct
+        )
 
     def test_wrong_order_rejected(self) -> None:
-        assert not ExerciseValidationService().validate(
-            WB, {"selected_words": ["pan", "como", "yo"]}
-        ).is_correct
+        assert (
+            not ExerciseValidationService()
+            .validate(WB, {"selected_words": ["pan", "como", "yo"]})
+            .is_correct
+        )
 
     def test_alternate_accepted(self) -> None:
-        assert ExerciseValidationService().validate(
-            WB, {"selected_words": ["como", "pan"]}
-        ).is_correct
+        assert (
+            ExerciseValidationService().validate(WB, {"selected_words": ["como", "pan"]}).is_correct
+        )
 
     def test_wrong_word(self) -> None:
-        assert not ExerciseValidationService().validate(
-            WB, {"selected_words": ["yo", "bebo", "pan"]}
-        ).is_correct
+        assert (
+            not ExerciseValidationService()
+            .validate(WB, {"selected_words": ["yo", "bebo", "pan"]})
+            .is_correct
+        )
 
 
 class TestMatchPairs:
@@ -101,15 +107,26 @@ class TestMatchPairs:
         assert result.is_correct
 
     def test_swapped_pair_rejected(self) -> None:
-        assert not ExerciseValidationService().validate(
-            MATCH,
-            {"pairs": [{"left": "hola", "right": "goodbye"}, {"left": "adiós", "right": "hello"}]},
-        ).is_correct
+        assert (
+            not ExerciseValidationService()
+            .validate(
+                MATCH,
+                {
+                    "pairs": [
+                        {"left": "hola", "right": "goodbye"},
+                        {"left": "adiós", "right": "hello"},
+                    ]
+                },
+            )
+            .is_correct
+        )
 
     def test_incomplete_set_rejected(self) -> None:
-        assert not ExerciseValidationService().validate(
-            MATCH, {"pairs": [{"left": "hola", "right": "hello"}]}
-        ).is_correct
+        assert (
+            not ExerciseValidationService()
+            .validate(MATCH, {"pairs": [{"left": "hola", "right": "hello"}]})
+            .is_correct
+        )
 
 
 class TestFillBlank:
@@ -129,9 +146,9 @@ class TestTypeAnswer:
         assert ExerciseValidationService().validate(TYPE, {"answer": "yo COMO pan"}).is_correct
 
     def test_whitespace_normalized(self) -> None:
-        assert ExerciseValidationService().validate(
-            TYPE, {"answer": "  Yo   como  pan  "}
-        ).is_correct
+        assert (
+            ExerciseValidationService().validate(TYPE, {"answer": "  Yo   como  pan  "}).is_correct
+        )
 
     def test_punctuation_normalized(self) -> None:
         assert ExerciseValidationService().validate(TYPE, {"answer": "¡Yo como pan!"}).is_correct
@@ -151,9 +168,11 @@ class TestTypeAnswer:
         assert not result.is_correct
 
     def test_accents_ignored_when_configured(self) -> None:
-        assert ExerciseValidationService().validate(
-            TYPE_ACCENT_SENSITIVE, {"answer": "pajaro"}
-        ).is_correct
+        assert (
+            ExerciseValidationService()
+            .validate(TYPE_ACCENT_SENSITIVE, {"answer": "pajaro"})
+            .is_correct
+        )
 
     def test_missing_answer_raises(self) -> None:
         with pytest.raises(InvalidExerciseSubmissionError):

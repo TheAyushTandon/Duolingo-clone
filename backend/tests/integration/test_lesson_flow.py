@@ -114,9 +114,7 @@ class TestLessonCompletionFlow:
                 headers=headers,
             )
 
-        completion = client.post(
-            f"/api/v1/lesson-attempts/{attempt_id}/complete", headers=headers
-        )
+        completion = client.post(f"/api/v1/lesson-attempts/{attempt_id}/complete", headers=headers)
         assert completion.status_code == 200
         data = completion.json()
         assert isinstance(data["is_skill_completed"], bool)
@@ -140,11 +138,7 @@ class TestWrongAnswersFlow:
             result = client.post(
                 f"/api/v1/lesson-attempts/{attempt_id}/exercises/"
                 f"{get_lesson_exercises(db, lesson)[0].id}/submit",
-                json={
-                    "submitted_answer": wrong_answer_for(
-                        get_lesson_exercises(db, lesson)[0]
-                    )
-                },
+                json={"submitted_answer": wrong_answer_for(get_lesson_exercises(db, lesson)[0])},
                 headers=demo_headers,
             )
             assert result.status_code == 200

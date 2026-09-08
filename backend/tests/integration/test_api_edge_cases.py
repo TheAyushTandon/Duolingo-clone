@@ -158,9 +158,7 @@ class TestLearningPathAPI:
         from app.models.content import Course
 
         english = db.scalar(select(Course).where(Course.code == "en"))
-        response = client.get(
-            f"/api/v1/learning-path?course_id={english.id}", headers=demo_headers
-        )
+        response = client.get(f"/api/v1/learning-path?course_id={english.id}", headers=demo_headers)
         assert response.status_code == 200
         assert response.json()["course"]["code"] == "en"
 
@@ -189,9 +187,7 @@ class TestLeaderboardAPI:
 
         # The derived value must match the ledger for the current week.
         week = week_start(dt.date.today())
-        week_start_dt = dt.datetime(
-            week.year, week.month, week.day, tzinfo=dt.UTC
-        )
+        week_start_dt = dt.datetime(week.year, week.month, week.day, tzinfo=dt.UTC)
         expected = int(
             db.scalar(
                 select(func.sum(XPTransaction.amount)).where(
@@ -236,8 +232,7 @@ class TestProfileAndAchievements:
             assert second.status_code == 200
             if second.json()["items"]:
                 assert (
-                    second.json()["items"][0]["activity_date"]
-                    < page["items"][0]["activity_date"]
+                    second.json()["items"][0]["activity_date"] < page["items"][0]["activity_date"]
                 )
 
     def test_achievements_listing(self, client, db, demo_headers) -> None:
@@ -350,8 +345,6 @@ class TestTransactionAtomicity:
 
         # No XP transaction for this attempt survived.
         transactions = list(
-            db.scalars(
-                select(XPTransaction).where(XPTransaction.reference_id == attempt_id)
-            )
+            db.scalars(select(XPTransaction).where(XPTransaction.reference_id == attempt_id))
         )
         assert transactions == []

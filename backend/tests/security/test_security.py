@@ -74,9 +74,9 @@ class TestOwnership:
     def _demo_attempt(self, client, db, demo_headers) -> tuple[str, str]:
         lesson = get_lesson_by_title(db, "Hello!")
         return (
-            client.post(
-                f"/api/v1/lessons/{lesson.id}/attempts", headers=demo_headers
-            ).json()["attempt_id"],
+            client.post(f"/api/v1/lessons/{lesson.id}/attempts", headers=demo_headers).json()[
+                "attempt_id"
+            ],
             get_lesson_exercises(db, lesson)[0].id,
         )
 
@@ -125,9 +125,7 @@ class TestInputValidation:
         attempt_id = client.post(
             f"/api/v1/lessons/{lesson.id}/attempts", headers=demo_headers
         ).json()["attempt_id"]
-        exercise = next(
-            e for e in get_lesson_exercises(db, lesson) if e.type == "TYPE_ANSWER"
-        )
+        exercise = next(e for e in get_lesson_exercises(db, lesson) if e.type == "TYPE_ANSWER")
 
         response = client.post(
             f"/api/v1/lesson-attempts/{attempt_id}/exercises/{exercise.id}/submit",
@@ -159,17 +157,13 @@ class TestInputValidation:
         assert response.status_code == 422
 
     def test_invalid_pagination_limit_rejected(self, client, db, demo_headers) -> None:
-        response = client.get(
-            "/api/v1/profile/activity?limit=99999", headers=demo_headers
-        )
+        response = client.get("/api/v1/profile/activity?limit=99999", headers=demo_headers)
         assert response.status_code == 422
 
 
 class TestErrorEnvelope:
     def test_error_envelope_has_code_message_request_id(self, client, db, demo_headers) -> None:
-        response = client.get(
-            "/api/v1/lessons/does-not-exist", headers=demo_headers
-        )
+        response = client.get("/api/v1/lessons/does-not-exist", headers=demo_headers)
         assert response.status_code == 404
         body = response.json()
         assert body["detail"]["code"] == "NOT_FOUND"
