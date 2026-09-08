@@ -7,6 +7,7 @@ import { Zap, Flame, Target, Trophy, ArrowRight, Sparkles } from "lucide-react";
 import { LessonCompleteResponse } from "@/types";
 import { DuoMascot } from "@/components/mascot/DuoMascot";
 import { useSound } from "@/hooks/useSound";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 interface LessonCompleteModalProps {
   data: LessonCompleteResponse;
@@ -16,6 +17,7 @@ interface LessonCompleteModalProps {
 export function LessonCompleteModal({ data, accuracy }: LessonCompleteModalProps) {
   const router = useRouter();
   const { playFanfare, playClick } = useSound();
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Play sound & fire festive confetti
@@ -58,10 +60,10 @@ export function LessonCompleteModal({ data, accuracy }: LessonCompleteModalProps
         {/* Headline */}
         <div>
           <h2 className="text-3xl sm:text-4xl font-black text-[#58cc02] tracking-tight">
-            Lesson Complete!
+            {t("Lesson Complete!")}
           </h2>
           <p className="text-sm font-bold text-slate-500 mt-1">
-            You are making fantastic language progress!
+            {t("You are making fantastic language progress!")}
           </p>
         </div>
 
@@ -70,7 +72,7 @@ export function LessonCompleteModal({ data, accuracy }: LessonCompleteModalProps
           {/* XP Card */}
           <div className="p-4 rounded-3xl border-2 border-amber-300 bg-amber-50 flex flex-col items-center justify-center">
             <span className="text-[10px] font-black uppercase tracking-wider text-amber-600 mb-1">
-              TOTAL XP
+              {t("TOTAL XP")}
             </span>
             <div className="flex items-center gap-1 text-amber-500 font-black text-2xl">
               <Zap size={22} className="fill-amber-500" />
@@ -81,7 +83,7 @@ export function LessonCompleteModal({ data, accuracy }: LessonCompleteModalProps
           {/* Accuracy Card */}
           <div className="p-4 rounded-3xl border-2 border-emerald-300 bg-emerald-50 flex flex-col items-center justify-center">
             <span className="text-[10px] font-black uppercase tracking-wider text-emerald-600 mb-1">
-              ACCURACY
+              {t("ACCURACY")}
             </span>
             <div className="flex items-center gap-1 text-emerald-600 font-black text-2xl">
               <Target size={22} />
@@ -92,7 +94,7 @@ export function LessonCompleteModal({ data, accuracy }: LessonCompleteModalProps
           {/* Streak Card */}
           <div className="p-4 rounded-3xl border-2 border-orange-300 bg-orange-50 flex flex-col items-center justify-center">
             <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 mb-1">
-              STREAK
+              {t("STREAK")}
             </span>
             <div className="flex items-center gap-1 text-orange-500 font-black text-2xl">
               <Flame size={22} className="fill-orange-500" />
@@ -110,7 +112,7 @@ export function LessonCompleteModal({ data, accuracy }: LessonCompleteModalProps
             <div>
               <div className="flex items-center gap-1 text-[11px] font-black uppercase tracking-wider text-purple-600">
                 <Sparkles size={12} />
-                Achievement Unlocked!
+                {t("Achievement Unlocked!")}
               </div>
               <h5 className="font-black text-slate-800 text-sm">
                 {data.new_achievements[0].name}
@@ -128,9 +130,9 @@ export function LessonCompleteModal({ data, accuracy }: LessonCompleteModalProps
             playClick();
             router.push("/learn");
           }}
-          className="w-full py-4 rounded-2xl bg-[#58cc02] text-white font-black text-base uppercase tracking-wider shadow-[0_5px_0_#46a302] hover:bg-[#46a302] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2"
+          className="w-full py-4 rounded-2xl bg-[#58cc02] text-white font-black text-base uppercase tracking-wider shadow-[0_5px_0_#46a302] hover:bg-[#46a302] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2 cursor-pointer"
         >
-          <span>CONTINUE</span>
+          <span>{t("CONTINUE")}</span>
           <ArrowRight size={20} />
         </button>
       </div>

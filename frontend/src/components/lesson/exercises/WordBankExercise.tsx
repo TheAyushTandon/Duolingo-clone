@@ -4,6 +4,7 @@ import React from "react";
 import { Volume2 } from "lucide-react";
 import { useSound } from "@/hooks/useSound";
 import { getQuestionSvg } from "@/lib/question-assets";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 interface WordBankExerciseProps {
   prompt: string;
@@ -27,6 +28,7 @@ export function WordBankExercise({
   isSpeechOnly = false,
 }: WordBankExerciseProps) {
   const { playClick, speak } = useSound();
+  const { tp } = useTranslation();
   const avatarSvg = React.useMemo(() => getQuestionSvg(prompt + (sentence || "")), [prompt, sentence]);
 
   // Auto-play speech on mount when in speech-only listening mode
@@ -43,7 +45,7 @@ export function WordBankExercise({
     <div className="w-full max-w-2xl mx-auto space-y-6 select-none">
       {/* Title */}
       <h2 className="text-2xl sm:text-3xl font-black text-[var(--text-main)] tracking-tight">
-        {isSpeechOnly ? "Tap what you hear" : prompt}
+        {isSpeechOnly ? tp("Tap what you hear") : tp(prompt)}
       </h2>
 
       {/* Mascot Speaking Sentence or Speech-Only Audio Player */}

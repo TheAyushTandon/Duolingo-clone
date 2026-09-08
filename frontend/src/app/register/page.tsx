@@ -25,6 +25,7 @@ const FALLBACK_COURSES: CourseOption[] = [
 import SiteLanguageDropdown from "@/components/SiteLanguageDropdown";
 import { fetchCourses } from "@/lib/api";
 import { COURSE_FLAGS } from "@/types";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 const LEARNER_COUNTS: Record<string, string> = {
   en: "20.5M learners",
@@ -33,6 +34,7 @@ const LEARNER_COUNTS: Record<string, string> = {
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [showNotice, setShowNotice] = useState(false);
   const [noticeMessage, setNoticeMessage] = useState("Only languages are supported as of this version of Duolingo.");
   const [step, setStep] = useState(0);
@@ -61,13 +63,13 @@ export default function RegisterPage() {
       setSelectedCourse(course);
       setStep(1);
     } else {
-      setNoticeMessage("Only languages are supported as of this version of Duolingo.");
+      setNoticeMessage(t("Only languages are supported as of this version of Duolingo."));
       setShowNotice(true);
     }
   };
 
   const handleSiteLanguageError = () => {
-    setNoticeMessage("Only English and Hindi are available in this section.");
+    setNoticeMessage(t("Only English and Hindi are available in this section."));
     setShowNotice(true);
   };
 
@@ -110,7 +112,7 @@ export default function RegisterPage() {
           className="font-din text-3xl sm:text-4xl text-center font-bold tracking-tight mb-8 sm:mb-12"
           style={{ color: '#4B4B4B' }}
         >
-          I want to learn...
+          {t("I want to learn...")}
         </h1>
 
         {/* Course Grid */}

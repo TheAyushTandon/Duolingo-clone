@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 interface SiteLanguage {
   name: string;
@@ -49,9 +50,20 @@ interface SiteLanguageDropdownProps {
 }
 
 export default function SiteLanguageDropdown({ onError }: SiteLanguageDropdownProps) {
+  const { language, setLanguage } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState("ENGLISH");
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("pointerdown", handleClickOutside);
+    return () => document.removeEventListener("pointerdown", handleClickOutside);
+  }, []);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -65,8 +77,11 @@ export default function SiteLanguageDropdown({ onError }: SiteLanguageDropdownPr
   };
 
   const handleLanguageClick = (langName: string) => {
-    if (langName === "English" || langName === "हिंदी") {
-      setCurrentLang(langName === "हिंदी" ? "HINDI" : "ENGLISH");
+    if (langName === "English") {
+      setLanguage("en");
+      setIsOpen(false);
+    } else if (langName === "हिंदी") {
+      setLanguage("hi");
       setIsOpen(false);
     } else {
       onError();
@@ -74,64 +89,94 @@ export default function SiteLanguageDropdown({ onError }: SiteLanguageDropdownPr
     }
   };
 
+  const siteLanguageLabel =
+    language === "hi" ? "साइट भाषा: हिंदी" : "SITE LANGUAGE: ENGLISH";
+
   return (
     <div
-      className="hidden md:block relative"
+      ref={dropdownRef}
+      className="relative flex items-center"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 py-2 px-1 text-[13px] font-black tracking-wider uppercase text-[#777777] hover:text-[#4B4B4B] transition-colors focus:outline-none cursor-pointer"
+        className="flex items-center gap-1.5 sm:gap-2 py-2 px-2 rounded-xl hover:bg-slate-100/80 text-[11px] sm:text-[13px] font-black tracking-wider uppercase text-[#777777] hover:text-[#4B4B4B] transition-colors focus:outline-none cursor-pointer"
+        aria-expanded={isOpen}
+        aria-label="Select Site Language"
       >
-        <span>SITE LANGUAGE: {currentLang}</span>
+        <span>{siteLanguageLabel}</span>
         <ChevronDown
           size={16}
           strokeWidth={2.8}
-          className={`text-[#777777] transition-transform duration-200 ${
+          className={`text-[#777777] transition-transform duration-200 shrink-0 ${
             isOpen ? "rotate-180" : ""
           }`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full pt-2 z-50">
-          <div className="relative w-[390px] bg-white rounded-[20px] border-2 border-[#E5E5E5] shadow-[0_12px_32px_rgba(0,0,0,0.09)] p-4 transition-all animate-in fade-in zoom-in-95 duration-150">
-            <div className="absolute -top-[7px] right-[14px] w-3 h-3 bg-white border-l-2 border-t-2 border-[#E5E5E5] rotate-45 z-10" />
+        <div className="absolute right-0 top-full pt-2 z-50 w-[calc(100vw-32px)] sm:w-[390px] max-w-[390px]">
+          <div className="relative w-full bg-white rounded-[20px] border-2 border-[#E5E5E5] shadow-[0_12px_32px_rgba(0,0,0,0.12)] p-4 max-h-[70vh] sm:max-h-[80vh] overflow-y-auto transition-all animate-in fade-in zoom-in-95 duration-150">
+            <div className="absolute -top-[7px] right-[18px] w-3 h-3 bg-white border-l-2 border-t-2 border-[#E5E5E5] rotate-45 z-10 hidden sm:block" />
 
             <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 select-none">
               <div className="flex flex-col space-y-0.5">
-                {COLUMN_1_LANGUAGES.map((item) => (
-                  <button
-                    key={item.name}
-                    onClick={() => handleLanguageClick(item.name)}
-                    className="group flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-[14px] font-bold text-[#4B4B4B] hover:bg-[#F1F7FB] hover:text-[#1CB0F6] transition-colors text-left cursor-pointer"
-                  >
-                    <img
-                      src={item.flag}
-                      alt={item.name}
-                      className="w-[22px] h-[16px] object-cover rounded-[3px] border border-black/10 shrink-0 group-hover:scale-105 transition-transform"
-                    />
-                    <span className="truncate">{item.name}</span>
-                  </button>
-                ))}
+                {COLUMN_1_LANGUAGES.map((item) => {
+                  const isSelected =
+                    (item.name === "हिंदी" && language === "hi") ||
+                    (item.name === "English" && language === "en");
+                  return (
+                    <button
+                      key={item.name}
+                      onClick={() => handleLanguageClick(item.name)}
+                      className={`group flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-[13px] sm:text-[14px] font-bold transition-colors text-left cursor-pointer ${
+                        isSelected
+                          ? "bg-[#EBF7FF] text-[#1CB0F6]"
+                          : "text-[#4B4B4B] hover:bg-[#F1F7FB] hover:text-[#1CB0F6]"
+                      }`}
+                    >
+                      <img
+                        src={item.flag}
+                        alt={item.name}
+                        className="w-[22px] h-[16px] object-cover rounded-[3px] border border-black/10 shrink-0 group-hover:scale-105 transition-transform"
+                      />
+                      <span className="truncate">{item.name}</span>
+                      {isSelected && (
+                        <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#1CB0F6] shrink-0" />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
 
               <div className="flex flex-col space-y-0.5">
-                {COLUMN_2_LANGUAGES.map((item) => (
-                  <button
-                    key={item.name}
-                    onClick={() => handleLanguageClick(item.name)}
-                    className="group flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-[14px] font-bold text-[#4B4B4B] hover:bg-[#F1F7FB] hover:text-[#1CB0F6] transition-colors text-left cursor-pointer"
-                  >
-                    <img
-                      src={item.flag}
-                      alt={item.name}
-                      className="w-[22px] h-[16px] object-cover rounded-[3px] border border-black/10 shrink-0 group-hover:scale-105 transition-transform"
-                    />
-                    <span className="truncate">{item.name}</span>
-                  </button>
-                ))}
+                {COLUMN_2_LANGUAGES.map((item) => {
+                  const isSelected =
+                    (item.name === "हिंदी" && language === "hi") ||
+                    (item.name === "English" && language === "en");
+                  return (
+                    <button
+                      key={item.name}
+                      onClick={() => handleLanguageClick(item.name)}
+                      className={`group flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-[13px] sm:text-[14px] font-bold transition-colors text-left cursor-pointer ${
+                        isSelected
+                          ? "bg-[#EBF7FF] text-[#1CB0F6]"
+                          : "text-[#4B4B4B] hover:bg-[#F1F7FB] hover:text-[#1CB0F6]"
+                      }`}
+                    >
+                      <img
+                        src={item.flag}
+                        alt={item.name}
+                        className="w-[22px] h-[16px] object-cover rounded-[3px] border border-black/10 shrink-0 group-hover:scale-105 transition-transform"
+                      />
+                      <span className="truncate">{item.name}</span>
+                      {isSelected && (
+                        <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#1CB0F6] shrink-0" />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>

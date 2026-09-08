@@ -3,9 +3,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useSound } from "@/hooks/useSound";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 export default function DuolingoEnglishTestSection() {
   const { playClick } = useSound();
+  const { t } = useTranslation();
 
   return (
     <section
@@ -23,14 +25,12 @@ export default function DuolingoEnglishTestSection() {
         >
           {/* Section Heading in Duolingo Feather font */}
           <h2 className="font-feather text-4xl sm:text-5xl lg:text-[48px] font-bold text-[#58CC02] lowercase leading-[1.15] mb-5 tracking-tight">
-            duolingo english test
+            {t("duolingo english test")}
           </h2>
 
           {/* Descriptive Body Paragraph */}
           <p className="text-base sm:text-[17px] text-[#777777] font-medium leading-[1.65] max-w-[473px] mb-8">
-            Our convenient, fast, and affordable English test integrates the latest
-            assessment science and AI — empowering anyone to accurately test their
-            English where and when they’re at their best.
+            {t("Our convenient, fast, and affordable English test integrates the latest assessment science and AI — empowering anyone to accurately test their English where and when they’re at their best.")}
           </p>
 
           {/* 3D Tactile Outlined CTA Button */}
@@ -42,7 +42,7 @@ export default function DuolingoEnglishTestSection() {
               onClick={playClick}
               className="inline-flex items-center justify-center bg-white border-2 border-[#E5E5E5] text-[#1CB0F6] font-black uppercase text-[15px] tracking-[0.8px] px-8 py-3.5 sm:py-4 rounded-2xl shadow-[0_2px_0_#E5E5E5] hover:bg-slate-50 hover:border-[#1CB0F6]/50 hover:shadow-[0_2px_0_#1CB0F6]/20 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer select-none"
             >
-              CERTIFY YOUR ENGLISH
+              {t("CERTIFY YOUR ENGLISH")}
             </a>
           </div>
         </motion.div>

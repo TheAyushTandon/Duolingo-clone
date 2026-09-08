@@ -4,9 +4,11 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { AnimationItem } from "lottie-web";
 import { useSound } from "@/hooks/useSound";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 export default function SuperDuolingoSection() {
   const { playClick } = useSound();
+  const { t } = useTranslation();
   const lottieContainerRef = useRef<HTMLDivElement>(null);
   const animInstanceRef = useRef<AnimationItem | null>(null);
   const [isLottieLoaded, setIsLottieLoaded] = useState(false);
@@ -109,7 +111,7 @@ export default function SuperDuolingoSection() {
               className="inline-flex items-center justify-center bg-white hover:bg-slate-50 text-[#042C60] font-black uppercase text-[15px] tracking-[0.8px] px-8 py-3.5 sm:py-4 rounded-2xl shadow-[0_4px_0_#757299] hover:shadow-[0_4px_0_#656289] hover:brightness-105 active:translate-y-1 active:shadow-none transition-all cursor-pointer select-none"
               style={{ color: "#042C60" }}
             >
-              TRY 1 WEEK FREE
+              {t("TRY 1 WEEK FREE")}
             </Link>
           </div>
         </div>

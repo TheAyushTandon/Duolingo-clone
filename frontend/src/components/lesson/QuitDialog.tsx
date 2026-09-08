@@ -4,6 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { DuoMascot } from "@/components/mascot/DuoMascot";
 import { useSound } from "@/hooks/useSound";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 interface QuitDialogProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface QuitDialogProps {
 
 export function QuitDialog({ isOpen, onClose, onConfirmQuit }: QuitDialogProps) {
   const { playClick } = useSound();
+  const { t } = useTranslation();
 
   if (!isOpen) return null;
 
@@ -25,11 +27,11 @@ export function QuitDialog({ isOpen, onClose, onConfirmQuit }: QuitDialogProps) 
         </div>
 
         <h3 className="font-black text-2xl text-slate-800">
-          Wait, don't leave!
+          {t("Wait, don't leave yet!")}
         </h3>
 
         <p className="text-sm font-bold text-slate-500">
-          You'll lose your progress in this lesson if you quit now.
+          {t("You'll lose your progress if you quit now.")}
         </p>
 
         <div className="w-full space-y-3 pt-2">
@@ -39,9 +41,9 @@ export function QuitDialog({ isOpen, onClose, onConfirmQuit }: QuitDialogProps) 
               playClick();
               onClose();
             }}
-            className="w-full py-3.5 rounded-2xl bg-[#58cc02] text-white font-black text-sm uppercase tracking-wider shadow-[0_4px_0_#46a302] hover:bg-[#46a302] active:translate-y-1 active:shadow-none transition-all"
+            className="w-full py-3.5 rounded-2xl bg-[#58cc02] text-white font-black text-sm uppercase tracking-wider shadow-[0_4px_0_#46a302] hover:bg-[#46a302] active:translate-y-1 active:shadow-none transition-all cursor-pointer"
           >
-            KEEP LEARNING
+            {t("KEEP LEARNING")}
           </button>
 
           {/* Confirm Quit Button */}
@@ -50,9 +52,9 @@ export function QuitDialog({ isOpen, onClose, onConfirmQuit }: QuitDialogProps) 
               playClick();
               onConfirmQuit();
             }}
-            className="w-full py-3 rounded-2xl text-rose-500 hover:bg-rose-50 font-black text-sm uppercase tracking-wider transition-colors"
+            className="w-full py-3 rounded-2xl text-rose-500 hover:bg-rose-50 font-black text-sm uppercase tracking-wider transition-colors cursor-pointer"
           >
-            END SESSION
+            {t("END SESSION")}
           </button>
         </div>
       </div>

@@ -10,6 +10,7 @@ import { SidebarItem } from "./sidebar-item";
 import { ThemeToggle } from "./theme-toggle";
 import { usePreferencesStore } from "@/stores/usePreferencesStore";
 import { logout } from "@/lib/api";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 type SidebarProps = {
   className?: string;
@@ -17,6 +18,7 @@ type SidebarProps = {
 
 export const Sidebar = ({ className }: SidebarProps) => {
   const toggleDevTools = usePreferencesStore((s) => s.toggleDevTools);
+  const { t } = useTranslation();
 
   return (
     <div
@@ -32,17 +34,17 @@ export const Sidebar = ({ className }: SidebarProps) => {
       </Link>
 
       <div className="flex flex-1 flex-col gap-y-2">
-        <SidebarItem label="Learn" href="/learn" iconSrc="/learn.svg" />
+        <SidebarItem label={t("Learn")} href="/learn" iconSrc="/learn.svg" />
         <SidebarItem
-          label="Leaderboard"
+          label={t("Leaderboard")}
           href="/leaderboard"
           iconSrc="/leaderboard.svg"
         />
-        <SidebarItem label="Quests" href="/quests" iconSrc="/quests.svg" />
-        <SidebarItem label="Shop" href="/shop" iconSrc="/shop.svg" />
-        <SidebarItem label="Profile" href="/profile" iconSrc="/profile.svg" />
+        <SidebarItem label={t("Quests")} href="/quests" iconSrc="/quests.svg" />
+        <SidebarItem label={t("Shop")} href="/shop" iconSrc="/shop.svg" />
+        <SidebarItem label={t("Profile")} href="/profile" iconSrc="/profile.svg" />
         <SidebarItem
-          label="Settings"
+          label={t("Settings")}
           href="/settings"
           icon={<Settings size={26} className="text-[var(--text-sub)]" />}
         />

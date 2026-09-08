@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 interface SiteLanguage {
   name: string;
@@ -50,9 +51,10 @@ interface LandingHeaderProps {
 }
 
 export function LandingHeader({ onOpenAuth }: LandingHeaderProps = {}) {
+  const { language, setLanguage, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [currentLang, setCurrentLang] = useState("ENGLISH");
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -61,6 +63,17 @@ export function LandingHeader({ onOpenAuth }: LandingHeaderProps = {}) {
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Click outside to close dropdown cleanly on mobile and desktop
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("pointerdown", handleClickOutside);
+    return () => document.removeEventListener("pointerdown", handleClickOutside);
   }, []);
 
   const handleMouseEnter = () => {
@@ -84,14 +97,20 @@ export function LandingHeader({ onOpenAuth }: LandingHeaderProps = {}) {
   }, [showError]);
 
   const handleLanguageClick = (langName: string) => {
-    if (langName === "English" || langName === "हिंदी") {
-      setCurrentLang(langName === "हिंदी" ? "HINDI" : "ENGLISH");
+    if (langName === "English") {
+      setLanguage("en");
+      setIsOpen(false);
+    } else if (langName === "हिंदी") {
+      setLanguage("hi");
       setIsOpen(false);
     } else {
       setShowError(true);
       setIsOpen(false);
     }
   };
+
+  const siteLanguageLabel =
+    language === "hi" ? "साइट भाषा: हिंदी" : "SITE LANGUAGE: ENGLISH";
 
   return (
     <>
@@ -104,51 +123,52 @@ export function LandingHeader({ onOpenAuth }: LandingHeaderProps = {}) {
         }`}
       >
       <div
-        className={`w-full max-w-5xl xl:max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 h-18 flex items-center transition-all duration-300 ease-in-out select-none relative ${
-          isScrolled ? "justify-between" : "justify-center md:justify-between"
-        }`}
+        className="w-full max-w-5xl xl:max-w-6xl mx-auto px-4 sm:px-8 lg:px-12 h-18 flex items-center justify-between transition-all duration-300 ease-in-out select-none relative"
       >
         {/* Duolingo Brand Logo */}
-        <Link href="/" className="flex items-center group transition-all duration-300 ease-in-out">
+        <Link href="/" className="flex items-center group transition-all duration-300 ease-in-out shrink-0">
           <img
             src="/duolingo.svg"
             alt="Duolingo"
-            className="h-9 md:h-10 w-auto object-contain group-hover:brightness-105 transition-all"
+            className="h-8 sm:h-9 md:h-10 w-auto object-contain group-hover:brightness-105 transition-all"
           />
         </Link>
 
-        {/* Right Action: Switches between Site Language trigger (at top, hidden on phone UI) and GET STARTED (when scrolled) */}
+        {/* Right Action: Switches between Site Language trigger and GET STARTED (when scrolled) */}
         {isScrolled ? (
           onOpenAuth ? (
             <button
               onClick={() => onOpenAuth("register")}
-              className="py-2 px-5 sm:py-2.5 sm:px-6 rounded-2xl bg-[#58CC02] text-white font-black text-[13px] uppercase tracking-wider shadow-[0_3px_0_#46A302] hover:brightness-105 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer shrink-0 animate-in fade-in duration-200"
+              className="py-2 px-4 sm:py-2.5 sm:px-6 rounded-2xl bg-[#58CC02] text-white font-black text-[12px] sm:text-[13px] uppercase tracking-wider shadow-[0_3px_0_#46A302] hover:brightness-105 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer shrink-0 animate-in fade-in duration-200"
             >
-              GET STARTED
+              {t("GET STARTED")}
             </button>
           ) : (
             <Link
               href="/register"
-              className="py-2 px-5 sm:py-2.5 sm:px-6 rounded-2xl bg-[#58CC02] text-white font-black text-[13px] uppercase tracking-wider shadow-[0_3px_0_#46A302] hover:brightness-105 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer shrink-0 animate-in fade-in duration-200"
+              className="py-2 px-4 sm:py-2.5 sm:px-6 rounded-2xl bg-[#58CC02] text-white font-black text-[12px] sm:text-[13px] uppercase tracking-wider shadow-[0_3px_0_#46A302] hover:brightness-105 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer shrink-0 animate-in fade-in duration-200"
             >
-              GET STARTED
+              {t("GET STARTED")}
             </Link>
           )
         ) : (
           <div
-            className="hidden md:block relative"
+            ref={dropdownRef}
+            className="relative flex items-center"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="flex items-center gap-2 py-2 px-1 text-[13px] font-black tracking-wider uppercase text-[#777777] hover:text-[#4B4B4B] transition-colors focus:outline-none cursor-pointer"
+              className="flex items-center gap-1.5 sm:gap-2 py-2 px-2 rounded-xl hover:bg-slate-100/80 text-[11px] sm:text-[13px] font-black tracking-wider uppercase text-[#777777] hover:text-[#4B4B4B] transition-colors focus:outline-none cursor-pointer"
+              aria-expanded={isOpen}
+              aria-label="Select Site Language"
             >
-              <span>SITE LANGUAGE: {currentLang}</span>
+              <span>{siteLanguageLabel}</span>
               <ChevronDown
                 size={16}
                 strokeWidth={2.8}
-                className={`text-[#777777] transition-transform duration-200 ${
+                className={`text-[#777777] transition-transform duration-200 shrink-0 ${
                   isOpen ? "rotate-180" : ""
                 }`}
               />
@@ -156,46 +176,70 @@ export function LandingHeader({ onOpenAuth }: LandingHeaderProps = {}) {
 
             {/* The 2-Column Languages Popover Menu */}
             {isOpen && (
-              <div className="absolute right-0 top-full pt-2 z-50">
-                <div className="relative w-[390px] bg-white rounded-[20px] border-2 border-[#E5E5E5] shadow-[0_12px_32px_rgba(0,0,0,0.09)] p-4 transition-all animate-in fade-in zoom-in-95 duration-150">
+              <div className="absolute right-0 top-full pt-2 z-50 w-[calc(100vw-32px)] sm:w-[390px] max-w-[390px]">
+                <div className="relative w-full bg-white rounded-[20px] border-2 border-[#E5E5E5] shadow-[0_12px_32px_rgba(0,0,0,0.12)] p-4 max-h-[70vh] sm:max-h-[80vh] overflow-y-auto transition-all animate-in fade-in zoom-in-95 duration-150">
                   {/* Top Pointer Speech Arrow */}
-                  <div className="absolute -top-[7px] right-[14px] w-3 h-3 bg-white border-l-2 border-t-2 border-[#E5E5E5] rotate-45 z-10" />
+                  <div className="absolute -top-[7px] right-[18px] w-3 h-3 bg-white border-l-2 border-t-2 border-[#E5E5E5] rotate-45 z-10 hidden sm:block" />
 
                   <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 select-none">
                     {/* Column 1 */}
                     <div className="flex flex-col space-y-0.5">
-                      {COLUMN_1_LANGUAGES.map((item) => (
-                        <button
-                          key={item.name}
-                          onClick={() => handleLanguageClick(item.name)}
-                          className="group flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-[14px] font-bold text-[#4B4B4B] hover:bg-[#F1F7FB] hover:text-[#1CB0F6] transition-colors text-left cursor-pointer"
-                        >
-                          <img
-                            src={item.flag}
-                            alt={item.name}
-                            className="w-[22px] h-[16px] object-cover rounded-[3px] border border-black/10 shrink-0 group-hover:scale-105 transition-transform"
-                          />
-                          <span className="truncate">{item.name}</span>
-                        </button>
-                      ))}
+                      {COLUMN_1_LANGUAGES.map((item) => {
+                        const isSelected =
+                          (item.name === "हिंदी" && language === "hi") ||
+                          (item.name === "English" && language === "en");
+                        return (
+                          <button
+                            key={item.name}
+                            onClick={() => handleLanguageClick(item.name)}
+                            className={`group flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-[13px] sm:text-[14px] font-bold transition-colors text-left cursor-pointer ${
+                              isSelected
+                                ? "bg-[#EBF7FF] text-[#1CB0F6]"
+                                : "text-[#4B4B4B] hover:bg-[#F1F7FB] hover:text-[#1CB0F6]"
+                            }`}
+                          >
+                            <img
+                              src={item.flag}
+                              alt={item.name}
+                              className="w-[22px] h-[16px] object-cover rounded-[3px] border border-black/10 shrink-0 group-hover:scale-105 transition-transform"
+                            />
+                            <span className="truncate">{item.name}</span>
+                            {isSelected && (
+                              <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#1CB0F6] shrink-0" />
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
 
                     {/* Column 2 */}
                     <div className="flex flex-col space-y-0.5">
-                      {COLUMN_2_LANGUAGES.map((item) => (
-                        <button
-                          key={item.name}
-                          onClick={() => handleLanguageClick(item.name)}
-                          className="group flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-[14px] font-bold text-[#4B4B4B] hover:bg-[#F1F7FB] hover:text-[#1CB0F6] transition-colors text-left cursor-pointer"
-                        >
-                          <img
-                            src={item.flag}
-                            alt={item.name}
-                            className="w-[22px] h-[16px] object-cover rounded-[3px] border border-black/10 shrink-0 group-hover:scale-105 transition-transform"
-                          />
-                          <span className="truncate">{item.name}</span>
-                        </button>
-                      ))}
+                      {COLUMN_2_LANGUAGES.map((item) => {
+                        const isSelected =
+                          (item.name === "हिंदी" && language === "hi") ||
+                          (item.name === "English" && language === "en");
+                        return (
+                          <button
+                            key={item.name}
+                            onClick={() => handleLanguageClick(item.name)}
+                            className={`group flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-[13px] sm:text-[14px] font-bold transition-colors text-left cursor-pointer ${
+                              isSelected
+                                ? "bg-[#EBF7FF] text-[#1CB0F6]"
+                                : "text-[#4B4B4B] hover:bg-[#F1F7FB] hover:text-[#1CB0F6]"
+                            }`}
+                          >
+                            <img
+                              src={item.flag}
+                              alt={item.name}
+                              className="w-[22px] h-[16px] object-cover rounded-[3px] border border-black/10 shrink-0 group-hover:scale-105 transition-transform"
+                            />
+                            <span className="truncate">{item.name}</span>
+                            {isSelected && (
+                              <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#1CB0F6] shrink-0" />
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -214,7 +258,7 @@ export function LandingHeader({ onOpenAuth }: LandingHeaderProps = {}) {
           <line x1="12" y1="8" x2="12" y2="12"></line>
           <line x1="12" y1="16" x2="12.01" y2="16"></line>
         </svg>
-        <span>Only English and Hindi are available in this section.</span>
+        <span>{t("Only English and Hindi are available in this section.")}</span>
       </div>
     )}
     </>

@@ -30,12 +30,14 @@ import { useSound } from "@/hooks/useSound";
 import { useLearningPath } from "@/hooks/useUserData";
 import { AlertCircle } from "lucide-react";
 import { AuthGuard } from "@/components/auth/AuthGuard";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 export default function LessonPlayerPage() {
   const params = useParams();
   const router = useRouter();
   const queryClient = useQueryClient();
   const lessonId = params.id as string;
+  const { tp, t } = useTranslation();
 
   const { playCorrect, playIncorrect, playHeartLost } = useSound();
 
@@ -313,7 +315,7 @@ export default function LessonPlayerPage() {
           <div key={currentExercise.id} className="animate-in fade-in duration-200">
             {currentExercise.type === "MULTIPLE_CHOICE" && (
               <MultipleChoiceExercise
-                prompt={currentExercise.prompt}
+                prompt={tp(currentExercise.prompt)}
                 options={currentExercise.exercise_data.options || []}
                 selectedOptionId={mcSelected}
                 onSelect={setMcSelected}
@@ -324,7 +326,7 @@ export default function LessonPlayerPage() {
 
             {currentExercise.type === "WORD_BANK" && (
               <WordBankExercise
-                prompt={currentExercise.prompt}
+                prompt={tp(currentExercise.prompt)}
                 sentence={currentExercise.exercise_data.sentence}
                 wordBank={currentExercise.exercise_data.word_bank || []}
                 selectedIndices={wbIndices}
@@ -343,7 +345,7 @@ export default function LessonPlayerPage() {
 
             {currentExercise.type === "MATCH" && (
               <MatchPairsExercise
-                prompt={currentExercise.prompt}
+                prompt={tp(currentExercise.prompt)}
                 pairsLeft={currentExercise.exercise_data.pairs_left || []}
                 pairsRight={currentExercise.exercise_data.pairs_right || []}
                 matchedPairs={matchPairs}
@@ -356,7 +358,7 @@ export default function LessonPlayerPage() {
 
             {currentExercise.type === "FILL_BLANK" && (
               <FillBlankExercise
-                prompt={currentExercise.prompt}
+                prompt={tp(currentExercise.prompt)}
                 sentenceParts={currentExercise.exercise_data.sentence_parts || ["", ""]}
                 choices={currentExercise.exercise_data.choices || []}
                 selectedChoice={fillChoice}
@@ -368,7 +370,7 @@ export default function LessonPlayerPage() {
 
             {currentExercise.type === "TYPE_ANSWER" && (
               <TypeAnswerExercise
-                prompt={currentExercise.prompt}
+                prompt={tp(currentExercise.prompt)}
                 promptSentence={currentExercise.exercise_data.prompt_sentence}
                 hint={currentExercise.exercise_data.hint}
                 value={typeValue}

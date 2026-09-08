@@ -3,6 +3,7 @@
 import React, { useRef, useEffect } from "react";
 import { Lightbulb } from "lucide-react";
 import { useSound } from "@/hooks/useSound";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 interface TypeAnswerExerciseProps {
   prompt: string;
@@ -43,6 +44,7 @@ export function TypeAnswerExercise({
   locale = "en-US",
 }: TypeAnswerExerciseProps) {
   const { playClick, speak } = useSound();
+  const { tp } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Spoken text source for audio challenge
@@ -96,7 +98,7 @@ export function TypeAnswerExercise({
   return (
     <div className="w-full max-w-xl mx-auto space-y-6 select-none">
       <h2 className="text-2xl sm:text-3xl font-black text-[var(--text-main)] tracking-tight">
-        {isSpeechOnly ? "Type what you hear" : prompt}
+        {isSpeechOnly ? tp("Type what you hear") : tp(prompt)}
       </h2>
 
       {/* Speech-Only Audio Controller (Text is completely hidden!) */}

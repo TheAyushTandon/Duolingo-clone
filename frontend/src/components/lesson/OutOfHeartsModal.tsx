@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { refillHearts } from "@/lib/api";
 import { useSound } from "@/hooks/useSound";
 import { DuoMascot } from "@/components/mascot/DuoMascot";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 interface OutOfHeartsModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export function OutOfHeartsModal({
 }: OutOfHeartsModalProps) {
   const queryClient = useQueryClient();
   const { playClick, playCorrect, playHeartLost } = useSound();
+  const { t } = useTranslation();
 
   const refillMutation = useMutation({
     mutationFn: (isPractice: boolean) => refillHearts(isPractice),
@@ -44,11 +46,11 @@ export function OutOfHeartsModal({
         </div>
 
         <h3 className="font-black text-2xl text-slate-800">
-          You ran out of hearts!
+          {t("You ran out of hearts!")}
         </h3>
 
         <p className="text-sm font-bold text-slate-500 max-w-xs">
-          Keep your streak going by refilling your hearts or completing a quick review session.
+          {t("Keep your streak going by refilling your hearts or completing a quick review session.")}
         </p>
 
         <div className="w-full space-y-3 pt-2">
@@ -56,11 +58,11 @@ export function OutOfHeartsModal({
           <button
             onClick={() => refillMutation.mutate(false)}
             disabled={refillMutation.isPending}
-            className="w-full py-3.5 px-4 rounded-2xl bg-[#1cb0f6] text-white font-black text-sm uppercase tracking-wider shadow-[0_4px_0_#1899d6] hover:bg-[#1899d6] active:translate-y-1 active:shadow-none transition-all flex items-center justify-between"
+            className="w-full py-3.5 px-4 rounded-2xl bg-[#1cb0f6] text-white font-black text-sm uppercase tracking-wider shadow-[0_4px_0_#1899d6] hover:bg-[#1899d6] active:translate-y-1 active:shadow-none transition-all flex items-center justify-between cursor-pointer"
           >
             <span className="flex items-center gap-2">
               <Sparkles size={18} />
-              Refill All 5 Hearts
+              {t("Refill All 5 Hearts")}
             </span>
             <span className="flex items-center gap-1 font-black bg-white/20 px-2 py-0.5 rounded-lg text-xs">
               350 <Gem size={14} className="fill-white" />
@@ -71,9 +73,9 @@ export function OutOfHeartsModal({
           <button
             onClick={() => refillMutation.mutate(true)}
             disabled={refillMutation.isPending}
-            className="w-full py-3.5 px-4 rounded-2xl bg-[#58cc02] text-white font-black text-sm uppercase tracking-wider shadow-[0_4px_0_#46a302] hover:bg-[#46a302] active:translate-y-1 active:shadow-none transition-all"
+            className="w-full py-3.5 px-4 rounded-2xl bg-[#58cc02] text-white font-black text-sm uppercase tracking-wider shadow-[0_4px_0_#46a302] hover:bg-[#46a302] active:translate-y-1 active:shadow-none transition-all cursor-pointer"
           >
-            Practice to Earn 1 Heart (+1 ❤️)
+            {t("Practice to Earn 1 Heart (+1 ❤️)")}
           </button>
 
           {/* End session */}
@@ -82,9 +84,9 @@ export function OutOfHeartsModal({
               playClick();
               onQuit();
             }}
-            className="w-full py-3 text-slate-400 hover:text-slate-600 font-black text-xs uppercase tracking-wider transition-colors"
+            className="w-full py-3 text-slate-400 hover:text-slate-600 font-black text-xs uppercase tracking-wider transition-colors cursor-pointer"
           >
-            QUIT TO LEARNING PATH
+            {t("QUIT TO LEARNING PATH")}
           </button>
         </div>
       </div>

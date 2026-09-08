@@ -3,9 +3,11 @@
 import React, { useRef } from "react";
 import { useScroll } from "framer-motion";
 import DuolingoLearnAnywhereAnimation from "./DuolingoLearnAnywhereAnimation";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 export default function LearnAnywhereSection() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { t, language } = useTranslation();
 
   // Animate on natural scroll while scrolling down (no sticky pinning)
   const { scrollYProgress } = useScroll({
@@ -45,13 +47,19 @@ export default function LearnAnywhereSection() {
             className="font-feather text-4xl sm:text-6xl lg:text-[64px] font-black lowercase leading-[1.08] tracking-tight !text-[#042C60]"
             style={{ color: "#042C60" }}
           >
-            <span style={{ color: "#042C60" }}>
-              learn anytime,
-            </span>
-            <br />
-            <span style={{ color: "#042C60" }}>
-              anywhere
-            </span>
+            {language === "hi" ? (
+              <span>कभी भी, कहीं भी सीखें</span>
+            ) : (
+              <>
+                <span style={{ color: "#042C60" }}>
+                  learn anytime,
+                </span>
+                <br />
+                <span style={{ color: "#042C60" }}>
+                  anywhere
+                </span>
+              </>
+            )}
           </h2>
 
           {/* Side-by-Side Store Badges: Apple App Store (left) & Google Play (right) */}

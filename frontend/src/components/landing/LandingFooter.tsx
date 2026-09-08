@@ -5,9 +5,11 @@ import Link from "next/link";
 import { useInView } from "framer-motion";
 import { useSound } from "@/hooks/useSound";
 import FooterDuoMascot from "./FooterDuoMascot";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 export default function LandingFooter() {
   const { playClick } = useSound();
+  const { t, language, setLanguage } = useTranslation();
   const bannerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(bannerRef, { amount: 0.2, once: false });
   const [isHovered, setIsHovered] = useState(false);
@@ -41,7 +43,11 @@ export default function LandingFooter() {
       <div className="w-full pt-16 sm:pt-24 px-6 flex flex-col items-center text-center z-30">
         {/* Duolingo Feather Headline in Official Lime Green */}
         <h2 className="font-feather text-4xl sm:text-5xl lg:text-[48px] font-bold text-[#58CC02] lowercase leading-[1.15] tracking-tight mb-7 sm:mb-8">
-          learn a language<br />with duolingo
+          {language === "hi" ? (
+            "डुओलिंगो के साथ भाषा सीखें"
+          ) : (
+            <>learn a language<br />with duolingo</>
+          )}
         </h2>
 
         {/* 3D Tactile Green Action Button with hover wing flap trigger */}
@@ -53,7 +59,7 @@ export default function LandingFooter() {
             onMouseLeave={() => setIsHovered(false)}
             className="inline-flex items-center justify-center py-3.5 sm:py-4 px-8 sm:px-12 rounded-2xl bg-[#58CC02] text-white font-black text-[15px] uppercase tracking-wider text-center shadow-[0_4px_0_#46A302] hover:brightness-105 active:translate-y-1 active:shadow-none transition-all cursor-pointer select-none"
           >
-            GET STARTED
+            {t("GET STARTED")}
           </Link>
         </div>
       </div>
@@ -83,7 +89,7 @@ export default function LandingFooter() {
             {sections.map((sec) => (
               <div key={sec.title} className="flex flex-col gap-3">
                 <h3 className="text-sm font-black uppercase tracking-wider text-white/90">
-                  {sec.title}
+                  {t(sec.title)}
                 </h3>
                 <ul className="flex flex-col gap-2">
                   {sec.links.map((lnk) => (
@@ -104,18 +110,36 @@ export default function LandingFooter() {
           {/* Bottom divider & language list */}
           <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-bold text-white/70">
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-              <span>Site language:</span>
-              <span className="text-white underline cursor-pointer">English</span>
+              <span>{t("Site language:")}</span>
+              <button
+                type="button"
+                onClick={() => setLanguage("en")}
+                className={`cursor-pointer transition-colors ${
+                  language === "en" ? "text-white underline font-extrabold" : "hover:text-white"
+                }`}
+              >
+                English
+              </button>
               <span>•</span>
-              <span className="hover:text-white cursor-pointer">Español</span>
+              <button
+                type="button"
+                onClick={() => setLanguage("hi")}
+                className={`cursor-pointer transition-colors ${
+                  language === "hi" ? "text-white underline font-extrabold" : "hover:text-white"
+                }`}
+              >
+                हिंदी
+              </button>
               <span>•</span>
-              <span className="hover:text-white cursor-pointer">Français</span>
+              <span className="opacity-60 cursor-not-allowed">Español</span>
               <span>•</span>
-              <span className="hover:text-white cursor-pointer">Deutsch</span>
+              <span className="opacity-60 cursor-not-allowed">Français</span>
               <span>•</span>
-              <span className="hover:text-white cursor-pointer">Italiano</span>
+              <span className="opacity-60 cursor-not-allowed">Deutsch</span>
               <span>•</span>
-              <span className="hover:text-white cursor-pointer">日本語</span>
+              <span className="opacity-60 cursor-not-allowed">Italiano</span>
+              <span>•</span>
+              <span className="opacity-60 cursor-not-allowed">日本語</span>
             </div>
 
             <div>

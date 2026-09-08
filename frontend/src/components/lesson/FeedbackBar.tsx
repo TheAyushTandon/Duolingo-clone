@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import { CheckCircle2, XCircle, ArrowRight } from "lucide-react";
 import { useSound } from "@/hooks/useSound";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 interface FeedbackBarProps {
   status: "idle" | "correct" | "incorrect";
@@ -22,6 +23,7 @@ export function FeedbackBar({
   isSubmitting = false,
 }: FeedbackBarProps) {
   const { playClick } = useSound();
+  const { t } = useTranslation();
 
   // Keyboard shortcut: Press Enter to submit check or continue
   useEffect(() => {
@@ -54,10 +56,10 @@ export function FeedbackBar({
             </div>
             <div>
               <h3 className="font-black text-xl leading-none">
-                Nicely done!
+                {t("Nicely done!")}
               </h3>
               <p className="text-xs font-bold text-[#58a700]/80 mt-1">
-                You got it right. Keep going!
+                {t("You got it right. Keep going!")}
               </p>
             </div>
           </div>
@@ -67,9 +69,9 @@ export function FeedbackBar({
               playClick();
               onContinue();
             }}
-            className="w-full sm:w-auto px-10 py-3.5 rounded-2xl bg-[#58cc02] text-white font-black text-sm uppercase tracking-wider shadow-[0_4px_0_#46a302] hover:bg-[#46a302] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-10 py-3.5 rounded-2xl bg-[#58cc02] text-white font-black text-sm uppercase tracking-wider shadow-[0_4px_0_#46a302] hover:bg-[#46a302] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
-            <span>CONTINUE</span>
+            <span>{t("CONTINUE")}</span>
             <ArrowRight size={18} />
           </button>
         </div>
@@ -87,10 +89,10 @@ export function FeedbackBar({
             </div>
             <div>
               <h3 className="font-black text-xl leading-none">
-                Correct solution:
+                {t("Correct solution:")}
               </h3>
               <p className="text-sm font-extrabold text-[#ea2b2b] mt-1">
-                {solutionText || "Please review the correct answer"}
+                {solutionText || t("Please review the correct answer")}
               </p>
             </div>
           </div>
@@ -100,9 +102,9 @@ export function FeedbackBar({
               playClick();
               onContinue();
             }}
-            className="w-full sm:w-auto px-10 py-3.5 rounded-2xl bg-[#ff4b4b] text-white font-black text-sm uppercase tracking-wider shadow-[0_4px_0_#d32f2f] hover:bg-[#e03838] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-10 py-3.5 rounded-2xl bg-[#ff4b4b] text-white font-black text-sm uppercase tracking-wider shadow-[0_4px_0_#d32f2f] hover:bg-[#e03838] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
-            <span>GOT IT</span>
+            <span>{t("GOT IT")}</span>
             <ArrowRight size={18} />
           </button>
         </div>
@@ -115,7 +117,7 @@ export function FeedbackBar({
     <footer className="fixed bottom-0 left-0 right-0 bg-[var(--bg-main)] border-t-2 border-[var(--border-color)] py-6 px-4 sm:px-8 z-40 select-none transition-colors duration-200">
       <div className="w-full max-w-4xl mx-auto flex items-center justify-between gap-4">
         <div className="hidden sm:block text-xs font-bold text-[var(--text-sub)]">
-          Tip: Press <kbd className="px-2 py-1 rounded bg-[var(--border-color)]/30 border border-[var(--border-color)] font-mono text-[10px]">Enter ↵</kbd> to submit
+          {t("Tip: Press Enter ↵ to submit")}
         </div>
 
         <button
@@ -126,13 +128,13 @@ export function FeedbackBar({
             }
           }}
           disabled={isCheckDisabled || isSubmitting}
-          className={`w-full sm:w-auto px-10 py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider transition-all ${
+          className={`w-full sm:w-auto px-10 py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider transition-all cursor-pointer ${
             isCheckDisabled || isSubmitting
               ? "bg-[var(--border-color)] text-[var(--text-sub)]/60 cursor-not-allowed shadow-none"
               : "bg-[#58cc02] text-white shadow-[0_4px_0_#46a302] hover:bg-[#46a302] active:translate-y-1 active:shadow-none"
           }`}
         >
-          {isSubmitting ? "CHECKING..." : "CHECK"}
+          {isSubmitting ? t("CHECKING...") : t("CHECK")}
         </button>
       </div>
     </footer>

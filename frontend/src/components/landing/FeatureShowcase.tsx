@@ -3,8 +3,11 @@
 import React from "react";
 import Link from "next/link";
 import { ScrollTriggeredVideo } from "./ScrollTriggeredVideo";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 export default function FeatureShowcase() {
+  const { t, language } = useTranslation();
+
   return (
     <section className="w-full pt-16 sm:pt-24 pb-12 sm:pb-16 bg-white select-none relative z-10">
       <div className="max-w-6xl mx-auto px-6 lg:px-12 flex flex-col gap-24 sm:gap-36">
@@ -13,18 +16,33 @@ export default function FeatureShowcase() {
           {/* Left: Text & Anchor Tag */}
           <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left">
             <h2 className="font-din text-4xl sm:text-5xl lg:text-[48px] font-bold text-[#58CC02] lowercase leading-[1.15] mb-5">
-              free. fun. effective.
+              {t("free. fun. effective.")}
             </h2>
             <p className="text-base sm:text-lg text-[#777777] font-medium leading-[1.65] max-w-md">
-              Learning with Duolingo is fun, and{" "}
-              <Link
-                href="/efficiency"
-                className="text-[#1CB0F6] font-bold hover:underline"
-              >
-                research shows that it works
-              </Link>
-              ! With quick, bite-sized lessons, you&apos;ll earn points and unlock
-              new levels while gaining real-world communication skills.
+              {language === "hi" ? (
+                <>
+                  डुओलिंगो के साथ सीखना मज़ेदार है और{" "}
+                  <Link
+                    href="/efficiency"
+                    className="text-[#1CB0F6] font-bold hover:underline"
+                  >
+                    शोध बताते हैं कि यह कारगर है
+                  </Link>
+                  ! छोटे-छोटे पाठों के साथ पॉइंट्स कमाएं और नए स्तर अनलॉक करें।
+                </>
+              ) : (
+                <>
+                  Learning with Duolingo is fun, and{" "}
+                  <Link
+                    href="/efficiency"
+                    className="text-[#1CB0F6] font-bold hover:underline"
+                  >
+                    research shows that it works
+                  </Link>
+                  ! With quick, bite-sized lessons, you&apos;ll earn points and unlock
+                  new levels while gaining real-world communication skills.
+                </>
+              )}
             </p>
           </div>
 
@@ -52,12 +70,10 @@ export default function FeatureShowcase() {
           {/* Right: Text Content */}
           <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left order-1 lg:order-2">
             <h2 className="font-feather text-4xl sm:text-5xl lg:text-[48px] font-bold text-[#58CC02] lowercase leading-[1.15] mb-5">
-              backed by science
+              {t("backed by science")}
             </h2>
             <p className="text-base sm:text-lg text-[#777777] font-medium leading-[1.65] max-w-md">
-              We use a combination of research-backed teaching methods and
-              delightful content to create courses that effectively teach
-              reading, writing, listening, and speaking skills!
+              {t("We use a combination of research-backed teaching methods and delightful content to create courses that effectively teach reading, writing, listening, and speaking skills!")}
             </p>
           </div>
         </div>
@@ -67,12 +83,10 @@ export default function FeatureShowcase() {
           {/* Left: Text Content */}
           <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left">
             <h2 className="font-feather text-4xl sm:text-5xl lg:text-[48px] font-bold text-[#58CC02] lowercase leading-[1.15] mb-5">
-              stay motivated
+              {t("stay motivated")}
             </h2>
             <p className="text-base sm:text-lg text-[#777777] font-medium leading-[1.65] max-w-md">
-              We make it easy to form a habit of language learning with game-like
-              features, fun challenges, and reminders from our friendly mascot,
-              Duo the owl.
+              {t("We make it easy to form a habit of language learning with game-like features, fun challenges, and reminders from our friendly mascot, Duo the owl.")}
             </p>
           </div>
 
@@ -101,11 +115,10 @@ export default function FeatureShowcase() {
           {/* Right: Text Content */}
           <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left order-1 lg:order-2">
             <h2 className="font-feather text-4xl sm:text-5xl lg:text-[48px] font-bold text-[#58CC02] lowercase leading-[1.15] mb-5">
-              personalized learning
+              {t("personalized learning")}
             </h2>
             <p className="text-base sm:text-lg text-[#777777] font-medium leading-[1.65] max-w-md">
-              Combining the best of AI and language science, lessons are
-              tailored to help you learn at just the right level and pace.
+              {t("Combining the best of AI and language science, lessons are tailored to help you learn at just the right level and pace.")}
             </p>
           </div>
         </div>

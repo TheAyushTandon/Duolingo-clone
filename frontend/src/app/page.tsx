@@ -14,10 +14,12 @@ import CreatorBadge from "@/components/landing/CreatorBadge";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { getStoredToken } from "@/lib/api";
 import { useSound } from "@/hooks/useSound";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 export default function LandingPage() {
   const router = useRouter();
   const { playClick } = useSound();
+  const { t } = useTranslation();
 
   const [authModalState, setAuthModalState] = useState<{
     isOpen: boolean;
@@ -73,7 +75,7 @@ export default function LandingPage() {
             {/* Right Column: Hero Typography & Call-To-Action Buttons */}
             <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left space-y-7">
               <h1 className="font-din text-[32px] sm:text-[36px] lg:text-[40px] text-[#222222] leading-[1.25] tracking-tight max-w-[460px]">
-                The most fun way to learn languages, chess, and more!
+                {t("The most fun way to learn languages, chess, and more!")}
               </h1>
 
               {/* 3D Action Buttons */}
@@ -83,7 +85,7 @@ export default function LandingPage() {
                   onClick={() => handleOpenAuth("register")}
                   className="w-full py-3.5 px-6 rounded-2xl bg-[#58CC02] text-white font-black text-[15px] uppercase tracking-wider text-center shadow-[0_4px_0_#46A302] hover:brightness-105 active:translate-y-1 active:shadow-none transition-all cursor-pointer"
                 >
-                  GET STARTED
+                  {t("GET STARTED")}
                 </button>
 
                 {/* Secondary White/Blue CTA: Logs in or routes to learn */}
@@ -91,7 +93,7 @@ export default function LandingPage() {
                   onClick={handleAlreadyAccount}
                   className="w-full py-3.5 px-6 rounded-2xl bg-white border-2 border-[#E5E5E5] text-[#1CB0F6] font-black text-[15px] uppercase tracking-wider text-center shadow-[0_4px_0_#E5E5E5] hover:bg-slate-50 active:translate-y-1 active:shadow-none transition-all cursor-pointer"
                 >
-                  I ALREADY HAVE AN ACCOUNT
+                  {t("I ALREADY HAVE AN ACCOUNT")}
                 </button>
               </div>
             </div>
