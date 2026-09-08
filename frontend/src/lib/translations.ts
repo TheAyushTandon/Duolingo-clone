@@ -221,6 +221,46 @@ export const HINDI_TRANSLATIONS: Record<string, string> = {
   "Match the animals": "जानवरों का मिलान करें",
   "Complete the phrase": "वाक्यांश पूरा करें",
 
+  // Streak & Popover
+  "day streak": "दिनों की लकीर",
+  "Great job! You extended your streak today!": "बहुत बढ़िया! आपने आज अपनी लकीर बढ़ा ली!",
+  "Do a lesson today to extend your streak!": "अपनी लकीर बढ़ाने के लिए आज एक पाठ पूरा करें!",
+  "Streak Society": "स्ट्रीक सोसाइटी",
+  "Reach a 7 day streak to join the Streak Society and earn exclusive rewards.":
+    "स्ट्रीक सोसाइटी में शामिल होने और विशेष पुरस्कार अर्जित करने के लिए 7 दिनों की लकीर बनाएं।",
+  "VIEW MORE": "और देखें",
+  "View more": "और देखें",
+
+  // Courses & Languages
+  "French": "फ़्रेंच",
+  "Spanish": "स्पैनिश",
+  "English": "अंग्रेज़ी",
+  "German": "जर्मन",
+  "Italian": "इतालवी",
+  "Japanese": "जापानी",
+
+  // Grammar & Guidebook Tips
+  "Grammar Tip: Genders & Articles": "व्याकरण सुझाव: लिंग और उपपद",
+  "In Spanish, nouns are either masculine or feminine. Words ending in -o are usually masculine (e.g., el café, el niño), while words ending in -a are usually feminine (e.g., la manzana, la niña).":
+    "स्पैनिश में संज्ञाएं या तो पुल्लिंग होती हैं या स्त्रीलिंग। -o पर समाप्त होने वाले शब्द आमतौर पर पुल्लिंग होते हैं (जैसे el café, el niño), जबकि -a पर समाप्त होने वाले शब्द आमतौर पर स्त्रीलिंग होते हैं (जैसे la manzana, la niña)।",
+
+  // Quests & Shop
+  "Monthly challenges unlock soon!": "मासिक चुनौतियाँ जल्द अनलॉक होंगी!",
+  "Complete each month's challenge to earn exclusive badges":
+    "विशेष बैज अर्जित करने के लिए प्रत्येक माह की चुनौती पूरी करें",
+  "Start a lesson": "पाठ शुरू करें",
+  "Daily Challenges": "दैनिक चुनौतियाँ",
+  "Daily Quests": "दैनिक मिशन",
+  "RESETS AT MIDNIGHT": "आधी रात को रीसेट होता है",
+  "Resets at midnight": "आधी रात को रीसेट होता है",
+  "Your gem balance": "आपके रत्नों का संतुलन",
+  "Get full hearts so you can worry less about making mistakes in a lesson":
+    "पूरे दिल पाएं ताकि आप पाठ में गलतियों की चिंता न करें",
+  "Unlimited Hearts": "असीमित दिल",
+  "Never run out of hearts with Super Duolingo!": "सुपर डुओलिंगो के साथ कभी भी दिल खत्म न हों!",
+  "FULL": "भरा हुआ",
+  "Set your status": "अपनी स्थिति सेट करें",
+
   // Notices
   "Only English and Hindi are available in this section.": "इस अनुभाग में केवल अंग्रेज़ी और हिंदी उपलब्ध हैं।",
   "Only languages are supported as of this version of Duolingo.": "डुओलिंगो के इस संस्करण में केवल भाषाएं समर्थित हैं।",

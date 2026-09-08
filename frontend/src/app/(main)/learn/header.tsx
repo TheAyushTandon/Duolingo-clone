@@ -1,13 +1,18 @@
+"use client";
+
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 type HeaderProps = {
   title: string;
 };
 
 export const Header = ({ title }: HeaderProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className="sticky top-0 mb-5 flex items-center justify-between border-b-2 bg-[var(--bg-main)] border-[var(--border-color)] pb-3 text-neutral-400 dark:text-neutral-200 lg:z-50 lg:mt-[-28px] lg:pt-[28px] transition-colors">
       <Link href="/courses" prefetch>
@@ -16,7 +21,7 @@ export const Header = ({ title }: HeaderProps) => {
         </Button>
       </Link>
 
-      <h1 className="text-lg font-bold text-neutral-700 dark:text-white">{title}</h1>
+      <h1 className="text-lg font-bold text-neutral-700 dark:text-white">{t(title)}</h1>
       <div aria-hidden />
     </div>
   );

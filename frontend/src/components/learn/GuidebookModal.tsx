@@ -12,17 +12,17 @@ interface GuidebookModalProps {
 }
 
 const PHRASES = [
-  { es: "¡Hola! Mucho gusto.", en: "Hello! Nice to meet you." },
-  { es: "Buenos días, ¿cómo estás?", en: "Good morning, how are you?" },
-  { es: "Por favor y gracias.", en: "Please and thank you." },
-  { es: "Un café con leche, por favor.", en: "A coffee with milk, please." },
-  { es: "¿Dónde está el baño?", en: "Where is the bathroom?" },
-  { es: "Hablo un poco de español.", en: "I speak a little Spanish." },
+  { es: "¡Hola! Mucho gusto.", en: "Hello! Nice to meet you.", hi: "नमस्ते! आपसे मिलकर खुशी हुई।" },
+  { es: "Buenos días, ¿cómo estás?", en: "Good morning, how are you?", hi: "सुप्रभात, आप कैसे हैं?" },
+  { es: "Por favor y gracias.", en: "Please and thank you.", hi: "कृपया और धन्यवाद।" },
+  { es: "Un café con leche, por favor.", en: "A coffee with milk, please.", hi: "कृपया एक कॉफ़ी दूध के साथ।" },
+  { es: "¿Dónde está el baño?", en: "Where is the bathroom?", hi: "शौचालय कहाँ है?" },
+  { es: "Hablo un poco de español.", en: "I speak a little Spanish.", hi: "मैं थोड़ी स्पैनिश बोलता हूँ।" },
 ];
 
 export function GuidebookModal({ unitIndex, unitTitle, onClose }: GuidebookModalProps) {
   const { playClick, speak } = useSound();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 select-none">
@@ -70,7 +70,7 @@ export function GuidebookModal({ unitIndex, unitTitle, onClose }: GuidebookModal
                       {item.es}
                     </span>
                     <span className="text-xs font-semibold text-slate-500">
-                      {item.en}
+                      {language === "hi" ? item.hi : item.en}
                     </span>
                   </div>
                   <button
@@ -88,10 +88,12 @@ export function GuidebookModal({ unitIndex, unitTitle, onClose }: GuidebookModal
           {/* Grammar Tips */}
           <div className="p-4 rounded-2xl bg-[#ddf4ff] border-2 border-[#84d8ff]">
             <h5 className="font-black text-sm text-[#1899d6] mb-1">
-              Grammar Tip: Genders & Articles
+              {t("Grammar Tip: Genders & Articles")}
             </h5>
             <p className="text-xs font-bold text-slate-700 leading-relaxed">
-              In Spanish, nouns are either masculine or feminine. Words ending in <strong>-o</strong> are usually masculine (e.g., <em>el café</em>, <em>el niño</em>), while words ending in <strong>-a</strong> are usually feminine (e.g., <em>la manzana</em>, <em>la niña</em>).
+              {language === "hi"
+                ? "स्पैनिश में संज्ञाएं या तो पुल्लिंग होती हैं या स्त्रीलिंग। -o पर समाप्त होने वाले शब्द आमतौर पर पुल्लिंग होते हैं (जैसे el café, el niño), जबकि -a पर समाप्त होने वाले शब्द आमतौर पर स्त्रीलिंग होते हैं (जैसे la manzana, la niña)।"
+                : "In Spanish, nouns are either masculine or feminine. Words ending in -o are usually masculine (e.g., el café, el niño), while words ending in -a are usually feminine (e.g., la manzana, la niña)."}
             </p>
           </div>
         </div>

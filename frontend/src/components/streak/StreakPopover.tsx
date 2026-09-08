@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { Check } from "lucide-react";
+import { useTranslation } from "@/stores/useLanguageStore";
 
 interface StreakPopoverProps {
   streak: number;
@@ -19,6 +20,7 @@ export function StreakPopover({
   align = "left",
   children,
 }: StreakPopoverProps) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -129,12 +131,12 @@ export function StreakPopover({
             <div className="flex items-start justify-between mb-4">
               <div className="space-y-1">
                 <h3 className="font-din font-black text-xl text-[#4F6573] tracking-wide">
-                  {streak} day streak
+                  {streak} {t("day streak")}
                 </h3>
                 <p className="font-din font-bold text-sm text-white leading-tight">
                   {streakActiveToday
-                    ? "Great job! You extended your streak today!"
-                    : "Do a lesson today to extend your streak!"}
+                    ? t("Great job! You extended your streak today!")
+                    : t("Do a lesson today to extend your streak!")}
                 </p>
               </div>
 
@@ -211,10 +213,10 @@ export function StreakPopover({
               {/* Text */}
               <div className="flex-1 space-y-0.5">
                 <h4 className="font-din font-black text-sm text-white leading-tight">
-                  Streak Society
+                  {t("Streak Society")}
                 </h4>
                 <p className="font-din font-bold text-xs text-[#8097A2] leading-snug">
-                  Reach a 7 day streak to join the Streak Society and earn exclusive rewards.
+                  {t("Reach a 7 day streak to join the Streak Society and earn exclusive rewards.")}
                 </p>
               </div>
             </div>
@@ -224,7 +226,7 @@ export function StreakPopover({
               href="/quests"
               className="w-full py-3 rounded-2xl font-din font-black text-xs uppercase tracking-wider text-white bg-[#1CB0F6] hover:bg-[#1899D6] shadow-[0_4px_0_#1899D6] active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center text-center"
             >
-              VIEW MORE
+              {t("VIEW MORE")}
             </Link>
           </div>
         </div>
