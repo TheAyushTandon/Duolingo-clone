@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import datetime as dt
 
-from app.services.heart_service import HeartService
 from app.models.user import User
+from app.services.heart_service import HeartService
 
 INTERVAL_MINUTES = 30
 

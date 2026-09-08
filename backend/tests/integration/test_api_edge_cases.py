@@ -190,7 +190,7 @@ class TestLeaderboardAPI:
         # The derived value must match the ledger for the current week.
         week = week_start(dt.date.today())
         week_start_dt = dt.datetime(
-            week.year, week.month, week.day, tzinfo=dt.timezone.utc
+            week.year, week.month, week.day, tzinfo=dt.UTC
         )
         expected = int(
             db.scalar(

@@ -41,7 +41,9 @@ def _error_response(request: Request, status: int, code: str, message: str) -> J
         response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Access-Control-Allow-Credentials"] = "true"
         response.headers["Access-Control-Allow-Methods"] = "GET, POST, PATCH, DELETE, OPTIONS"
-        response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, X-Request-ID"
+        response.headers["Access-Control-Allow-Headers"] = (
+            "Authorization, Content-Type, X-Request-ID"
+        )
     return response
 
 

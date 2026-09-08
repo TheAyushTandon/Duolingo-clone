@@ -27,6 +27,7 @@ class TestAwardXP:
 
         assert user.xp == 15
         from sqlalchemy import select
+
         from app.models.gamification import XPTransaction
 
         rows = list(db.scalars(select(XPTransaction).where(XPTransaction.user_id == user.id)))

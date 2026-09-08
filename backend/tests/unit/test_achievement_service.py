@@ -6,12 +6,12 @@ import datetime as dt
 
 from sqlalchemy import select
 
+from app.core.constants import AttemptStatus
 from app.models.achievement import UserAchievement
 from app.models.attempt import LessonAttempt
 from app.models.content import Lesson, Skill
 from app.models.progress import UserSkillProgress
 from app.models.user import User
-from app.core.constants import AttemptStatus
 from app.services.achievement_service import AchievementService
 
 

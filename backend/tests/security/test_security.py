@@ -7,10 +7,7 @@ security headers.
 
 from __future__ import annotations
 
-from sqlalchemy import select
-
-from app.models.user import User
-from tests.helpers import correct_answer_for, get_lesson_by_title, get_lesson_exercises
+from tests.helpers import get_lesson_by_title, get_lesson_exercises
 
 
 def _register_and_login(client, username: str, password: str = "secret-pass-1") -> str:
