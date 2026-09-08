@@ -11,8 +11,8 @@
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://typescriptlang.org)
 [![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=flat-square&logo=sqlite&logoColor=white)](https://sqlite.org)
-[![Tests](https://img.shields.io/badge/tests-103%20passing-2ea44f?style=flat-square)](#-quality-gates)
-[![Coverage](https://img.shields.io/badge/coverage-94%25-2ea44f?style=flat-square)](#-quality-gates)
+[![Tests](https://img.shields.io/badge/tests-104%20passing-2ea44f?style=flat-square)](#quality-gates)
+[![Coverage](https://img.shields.io/badge/coverage-94%25-2ea44f?style=flat-square)](#quality-gates)
 
 **Built by Ayush Tandon**
 
@@ -22,25 +22,25 @@
 
 ## 📖 Table of Contents
 
-1. [Overview](#-overview)
-2. [Feature Showcase](#-feature-showcase)
-3. [System Architecture](#-system-architecture)
-4. [The Lesson Loop (Core Mechanic)](#-the-lesson-loop-core-mechanic)
-5. [Atomic Completion — Why XP Can Never Be Awarded Twice](#-atomic-completion--why-xp-can-never-be-awarded-twice)
-6. [Database Schema](#-database-schema)
-7. [API Reference](#-api-reference)
-8. [Gamification Engine](#-gamification-engine)
-9. [Security & Production Readiness](#-security--production-readiness)
-10. [Quality Gates](#-quality-gates)
-11. [Getting Started](#-getting-started)
-12. [Testing & Demo Guide](#-testing--demo-guide)
-13. [Deployment](#-deployment)
-14. [Tech Decisions & Rationale](#-tech-decisions--rationale)
-15. [Project Structure](#-project-structure)
+1. [Overview](#overview)
+2. [Feature Showcase](#feature-showcase)
+3. [System Architecture](#system-architecture)
+4. [The Lesson Loop (Core Mechanic)](#the-lesson-loop)
+5. [Atomic Completion — Why XP Can Never Be Awarded Twice](#atomic-completion)
+6. [Database Schema](#database-schema)
+7. [API Reference](#api-reference)
+8. [Gamification Engine](#gamification-engine)
+9. [Security & Production Readiness](#security-and-production-readiness)
+10. [Quality Gates](#quality-gates)
+11. [Getting Started](#getting-started)
+12. [Testing & Demo Guide](#testing-and-demo-guide)
+13. [Deployment](#deployment)
+14. [Tech Decisions & Rationale](#tech-decisions-and-rationale)
+15. [Project Structure](#project-structure)
 
 ---
 
-## 🎯 Overview
+## <a id="overview"></a>🎯 Overview
 
 This project is a faithful, full-stack recreation of Duolingo — not a generic quiz app. A learner moves through a **winding skill-tree learning path**, plays lessons built from **five interactive exercise types**, earns **XP and gems**, maintains a **daily streak**, loses and regenerates **hearts**, competes on a **live weekly leaderboard**, and unlocks **achievements** — all inside the playful, colorful, mascot-fueled interface that defines Duolingo.
 
@@ -55,7 +55,7 @@ This project is a faithful, full-stack recreation of Duolingo — not a generic 
 
 ---
 
-## ✨ Feature Showcase
+## <a id="feature-showcase"></a>✨ Feature Showcase
 
 ### 🗺️ Learning Path / Skill Tree
 - Signature **sinusoidal winding path** with unit banners in Duolingo's rotating palette
@@ -97,7 +97,7 @@ This project is a faithful, full-stack recreation of Duolingo — not a generic 
 
 ---
 
-## 🏗️ System Architecture
+## <a id="system-architecture"></a>🏗️ System Architecture
 
 A clean **modular monolith**: one deployable FastAPI app with strict layering. Routers stay thin, services own all business logic, repositories own all queries, and Pydantic schemas guard every boundary.
 
@@ -163,7 +163,7 @@ graph LR
 
 ---
 
-## 🔁 The Lesson Loop (Core Mechanic)
+## <a id="the-lesson-loop"></a>🔁 The Lesson Loop (Core Mechanic)
 
 Every lesson run is a durable server-side **`LessonAttempt`** — the foundation for refresh recovery, analytics, and idempotent completion.
 
@@ -201,7 +201,7 @@ sequenceDiagram
 
 ---
 
-## 🔐 Atomic Completion — Why XP Can Never Be Awarded Twice
+## <a id="atomic-completion"></a>🔐 Atomic Completion — Why XP Can Never Be Awarded Twice
 
 Lesson completion is the most safety-critical flow. Three independent layers guard it:
 
@@ -231,7 +231,7 @@ This is proven by tests: duplicate-completion awards exactly one XP transaction,
 
 ---
 
-## 🗄️ Database Schema
+## <a id="database-schema"></a>🗄️ Database Schema
 
 14 tables, UUID primary keys, timezone-aware timestamps, foreign keys with cascade rules, check constraints, and indexes on every query path.
 
@@ -296,7 +296,7 @@ erDiagram
 
 ---
 
-## 🌐 API Reference
+## <a id="api-reference"></a>🌐 API Reference
 
 All routes are mounted under **both `/api`** (frontend contract) **and `/api/v1`** (versioned convention). Full interactive docs at **`/docs`** (Swagger) once running.
 
@@ -332,7 +332,7 @@ All routes are mounted under **both `/api`** (frontend contract) **and `/api/v1`
 
 ---
 
-## 🎰 Gamification Engine
+## <a id="gamification-engine"></a>🎰 Gamification Engine
 
 ```mermaid
 flowchart LR
@@ -358,7 +358,7 @@ flowchart LR
 
 ---
 
-## 🛡️ Security & Production Readiness
+## <a id="security-and-production-readiness"></a>🛡️ Security & Production Readiness
 
 | Control | Implementation |
 |---|---|
@@ -378,7 +378,7 @@ flowchart LR
 
 ---
 
-## ✅ Quality Gates
+## <a id="quality-gates"></a>✅ Quality Gates
 
 All of these pass and are enforced in CI (`.github/workflows/backend-ci.yml`) on every push/PR:
 
@@ -399,7 +399,7 @@ pip-audit               # dependency vulnerabilities
 
 ---
 
-## 🚀 Getting Started
+## <a id="getting-started"></a>🚀 Getting Started
 
 ### Prerequisites
 - **Python 3.12+** · **Node.js 18+**
@@ -457,7 +457,7 @@ cd backend && python scripts/verify.py
 
 ---
 
-## 🧪 Testing & Demo Guide
+## <a id="testing-and-demo-guide"></a>🧪 Testing & Demo Guide
 
 A click-path that exercises every core feature:
 
@@ -474,7 +474,7 @@ A click-path that exercises every core feature:
 
 ---
 
-## ☁️ Deployment
+## <a id="deployment"></a>☁️ Deployment
 
 The backend ships with a production Dockerfile (non-root user, health check, migrate + seed entrypoint):
 
@@ -502,7 +502,7 @@ RATE_LIMIT_ENABLED=true
 
 ---
 
-## 🧠 Tech Decisions & Rationale
+## <a id="tech-decisions-and-rationale"></a>🧠 Tech Decisions & Rationale
 
 | Decision | Why |
 |---|---|
@@ -521,7 +521,7 @@ RATE_LIMIT_ENABLED=true
 
 ---
 
-## 📁 Project Structure
+## <a id="project-structure"></a>📁 Project Structure
 
 ```text
 .
