@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import datetime as dt
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from app.core.constants import AttemptStatus
 from app.schemas.achievement import AchievementOut
@@ -35,9 +35,16 @@ class LessonCompleteResponse(BaseModel):
     total_xp: int
     streak: int
     hearts_remaining: int
-    skill_level: int
-    is_skill_completed: bool
-    new_achievements: list[AchievementOut]
+    skill_level: int = 1
+    is_skill_completed: bool = False
+    new_achievements: list[AchievementOut] = []
+
+    @field_validator("is_skill_completed", mode="before")
+    @classmethod
+    def _coerce_is_skill_completed(cls, v: object) -> bool:
+        if v is None:
+            return False
+        return bool(v)
 
 
 class AttemptDetailResponse(BaseModel):

@@ -50,6 +50,7 @@ class ProgressService:
             progress.level = skill.total_levels
             progress.progress_percentage = 100
         else:
+            progress.is_completed = bool(progress.is_completed)
             progress.level = min(len(completed_in_skill) + 1, max(skill.total_levels, 1))
 
         return progress

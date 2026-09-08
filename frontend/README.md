@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🦉 Duolingo Clone — Frontend
 
-## Getting Started
+The Next.js client for the Duolingo clone: the winding skill-tree learning path, the interactive lesson player with all five exercise types, and the gamified shell (leaderboard, quests, shop, profile, settings) — visually faithful to the original Duolingo.
 
-First, run the development server:
+> Architecture, database schema, and the full API contract live in the **[root README](../README.md)**.
+
+---
+
+## 🧰 Stack
+
+| Tool | Role |
+|---|---|
+| **Next.js 16** (App Router) | File-based routing; server-rendered pages with interactive client islands |
+| **TypeScript** | Types for the entire backend API contract (`src/types/index.ts`) |
+| **Tailwind CSS v4** | Duolingo's design language: chunky 3D buttons, `#58cc02` green, rounded everything |
+| **TanStack React Query** | Server-state cache — one key per resource; lesson completion invalidates and the whole UI refreshes |
+| **Zustand** | Lightweight client state (sound toggle, dev-tools modal) |
+| **Framer Motion** | Onboarding transitions, toast animations |
+| **Web Speech API** | Native-tongue narration (`fr-FR` / `en-US`) + synthesized sound effects |
+| **canvas-confetti** | Lesson-complete celebration |
+
+---
+
+## 🚀 Run locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev          # → http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The API base URL defaults to `http://127.0.0.1:8000/api` (backend repo: `../backend`). Override with:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+NEXT_PUBLIC_API_URL=http://127.0.0.1:8000/api npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Login** with the seeded demo learner — `demo_learner` / `duolingo123` — or register a new account from the landing page.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🗺️ Pages
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Route | What it is |
+|---|---|
+| `/` | Marketing landing page (hero animation, feature showcase) |
+| `/register` | Course selection + onboarding wizard (persists course & daily goal) |
+| `/learn` | Skill tree: unit banners, skill nodes with states, daily-goal ring, live stats sidebar |
+| `/lesson/[id]` | Lesson player: exercises, feedback bar, hearts, quit/out-of-hearts/completion modals |
+| `/leaderboard` | Weekly league with promotion zone |
+| `/quests` | Daily XP + lesson quests with real progress |
+| `/shop` | Gem balance, 350-gem heart refill, Super preview |
+| `/profile` | Stat cards, lifetime stats, achievement gallery |
+| `/settings` | Daily-goal editor, sound/theme toggles, Coming-Soon placeholders |
+| `/courses` | Course switcher (French ⇄ English) |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🧩 Key components
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **`lesson/exercises/*`** — the five exercise types (multiple choice, word bank, match pairs, fill blank, type answer), each with tactile Duolingo styling and narration via `speak(text, locale)`
+- **`learn/LearningPath` + `SkillNode`** — sinusoidal path with server-resolved states (locked/available/in-progress/completed), progress rings, crowns, START popovers
+- **`daily-goal-ring`** — circular flame indicator fed by today's real XP
+- **`live-user-progress` / `live-quests`** — API-driven sidebar widgets
+- **`hooks/useUserData`** — the shared React Query hooks (one cache key per backend resource)
+- **`lib/api`** — typed fetch client with bearer-token auth and the backend's error-envelope handling
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🏗️ Build & verify
+
+```bash
+npm run build    # production build (verified green: 13 routes)
+npm run lint     # eslint
+```
+
+---
+
+Made with 🦉 as part of the Duolingo Clone project by **Ayush Tandon**.

@@ -219,8 +219,8 @@ class AttemptService:
             skill = self.content_repo.get_skill(self.db, lesson.skill_id)
             if skill is not None:
                 progress = self.progress_service.update_skill_progress(user, skill)
-                skill_completed = progress.is_completed
-                skill_level = progress.level
+                skill_completed = bool(progress.is_completed)
+                skill_level = progress.level or 1
 
         # Daily activity (idempotent per date via UNIQUE(user_id, date)).
         today = today_utc()
@@ -248,7 +248,7 @@ class AttemptService:
             "streak": streak,
             "hearts_remaining": user.hearts,
             "skill_level": skill_level,
-            "is_skill_completed": skill_completed,
+            "is_skill_completed": bool(skill_completed),
             "new_achievements": [
                 {
                     "id": achievement.id,

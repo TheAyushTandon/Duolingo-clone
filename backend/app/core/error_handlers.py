@@ -32,10 +32,17 @@ def _request_id(request: Request) -> str:
 
 def _error_response(request: Request, status: int, code: str, message: str) -> JSONResponse:
     body = ErrorResponse(detail=ErrorBody(code=code, message=message))
-    return JSONResponse(
+    response = JSONResponse(
         status_code=status,
         content={**body.model_dump(), "request_id": _request_id(request)},
     )
+    origin = request.headers.get("origin")
+    if origin:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PATCH, DELETE, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, X-Request-ID"
+    return response
 
 
 def register_error_handlers(app: FastAPI) -> None:

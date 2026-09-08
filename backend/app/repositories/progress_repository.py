@@ -32,7 +32,13 @@ class ProgressRepository:
     def upsert_skill_progress(self, db: Session, user_id: str, skill_id: str) -> UserSkillProgress:
         progress = self.get_skill_progress(db, user_id, skill_id)
         if progress is None:
-            progress = UserSkillProgress(user_id=user_id, skill_id=skill_id)
+            progress = UserSkillProgress(
+                user_id=user_id,
+                skill_id=skill_id,
+                level=1,
+                progress_percentage=0,
+                is_completed=False,
+            )
             db.add(progress)
         return progress
 
